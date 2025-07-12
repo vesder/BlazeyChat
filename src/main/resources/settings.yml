@@ -1,0 +1,39 @@
+# evrything is optinal you can disable them if you dont want them
+
+defaults:
+  prefix: "&6[ChatCore]&r "
+  default-sound: ""
+  default-command: ""
+  enable-color-codes: true
+
+custom-prefixes:
+  prefix2: "[ PREFIX 2 ]"
+
+shout:
+  enabled: true
+  actions:
+    shout-message:
+      sender:
+        message: "[SHOUT] <message>"
+        sound: ""
+        command: ""
+      receiver:
+        message: "[SHOUT] <message>"
+        sound: ""
+        command: ""
+    toggle:
+      enable:
+        message: "Shout enabled!"
+        sound: ""
+        command: ""
+      disable:
+        message: "Shout disabled!"
+        sound: ""
+        command: ""
+
+#Allowed Fonts:
+#  - ACCSI
+#
+#Player Defaults:
+#  true
+#  false

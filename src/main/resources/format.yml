@@ -1,0 +1,21 @@
+# Available placeholders (provided by the plugin itself):
+# <message> - The content of the chat message.
+# <username> - The sender's username.
+# <displayname> - The sender's display name.
+# <prefix> - The sender's prefix, supplied by a permissions plugin.
+# <suffix> - The sender's suffix, supplied by a permissions plugin.
+# <group> - The sender's primary group name, supplied by a permissions plugin.
+# <worldname> - The full name of the sender's current world.
+#
+# Supports MiniMessage formatting (colors, gradients, hover, etc.)
+# MiniMessage editor: https://webui.advntr.dev/
+#
+# Also supports PlaceholderAPI placeholders separately !
+# See the full list here: https://wiki.placeholderapi.com/users/placeholder-list/
+#
+# Priority: checks groups from bottom (highest priority) to top (lowest).
+# Example order: owner > admin > default
+group-formats:
+  default: "&7Member :&r <displayname> > <message>"
+  admin: "&cAdmin :&r <displayname> > <message>"
+  owner: "&bOwner :&r <displayname> > <message>"
