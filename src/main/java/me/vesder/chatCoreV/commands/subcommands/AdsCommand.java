@@ -21,12 +21,17 @@ public class AdsCommand implements SubCommand {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Broadcast ads and customize related settings.";
     }
 
     @Override
     public String getSyntax() {
         return "/ccv ads [settings]";
+    }
+
+    @Override
+    public String getPermission() {
+        return "chatcorev.command.ads";
     }
 
     @Override

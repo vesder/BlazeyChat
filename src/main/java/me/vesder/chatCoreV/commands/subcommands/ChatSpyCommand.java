@@ -25,6 +25,11 @@ public class ChatSpyCommand implements SubCommand {
     }
 
     @Override
+    public String getPermission() {
+        return "chatcorev.command.chatspy";
+    }
+
+    @Override
     public void perform(Player player, String[] args) {
 
         User user = UserManager.getUser(player.getUniqueId());

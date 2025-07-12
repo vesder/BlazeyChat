@@ -70,7 +70,7 @@ public class CommandManager implements TabExecutor {
 
         filteredNames.removeIf(filteredName -> {
             SubCommand subCommand = getSubCommand(filteredName);
-            return subCommand.getPermission() != null && !sender.hasPermission(subCommand.getPermission());
+            return !sender.hasPermission(subCommand.getPermission());
         });
 
         return filteredNames;
@@ -94,7 +94,7 @@ public class CommandManager implements TabExecutor {
 
             SubCommand subCommand = getSubCommand(args[0]);
 
-            if (subCommand.getPermission() != null && !sender.hasPermission(subCommand.getPermission())) {
+            if (!sender.hasPermission(subCommand.getPermission())) {
                 return true;
             }
 

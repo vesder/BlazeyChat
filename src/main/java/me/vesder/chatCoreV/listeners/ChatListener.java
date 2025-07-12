@@ -46,7 +46,7 @@ public class ChatListener implements Listener {
 //            Later Fix Soft Depend Vault + @Getter For Vault Hook
 //        }
 
-        List<String> playerGroups = List.of(VaultHook.getPermissions().getPlayerGroups(player));
+        List<String> playerGroups = List.of(VaultHook.getPerms().getPlayerGroups(player));
         List<String> formattedGroups = new ArrayList<>(formatConfig.getFormatSection().getKeys(false));
         Collections.reverse(formattedGroups);
 
@@ -116,7 +116,7 @@ public class ChatListener implements Listener {
         boolean allowColor = player.hasPermission("chatcorev.color");
 
         if (!allowColor && VaultHook.hasPermissions()) {
-            allowColor = VaultHook.getPermissions().playerHas(player, "chatcorev.color");
+            allowColor = VaultHook.getPerms().playerHas(player, "chatcorev.color");
         }
 
         if (allowColor) {
@@ -127,7 +127,7 @@ public class ChatListener implements Listener {
                 Placeholder.component("displayname", player.displayName()),
                 Placeholder.parsed("prefix", VaultHook.getChat().getPlayerPrefix(player)),
                 Placeholder.parsed("suffix", VaultHook.getChat().getPlayerSuffix(player)),
-                Placeholder.unparsed("group", VaultHook.getPermissions().getPrimaryGroup(player)),
+                Placeholder.unparsed("group", VaultHook.getPerms().getPrimaryGroup(player)),
                 Placeholder.unparsed("worldname", player.getWorld().getName())
             );
 
@@ -139,7 +139,7 @@ public class ChatListener implements Listener {
             Placeholder.component("displayname", player.displayName()),
             Placeholder.parsed("prefix", VaultHook.getChat().getPlayerPrefix(player)),
             Placeholder.parsed("suffix", VaultHook.getChat().getPlayerSuffix(player)),
-            Placeholder.unparsed("group", VaultHook.getPermissions().getPrimaryGroup(player)),
+            Placeholder.unparsed("group", VaultHook.getPerms().getPrimaryGroup(player)),
             Placeholder.unparsed("worldname", player.getWorld().getName())
         );
 

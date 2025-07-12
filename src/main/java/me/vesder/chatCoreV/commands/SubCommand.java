@@ -13,9 +13,7 @@ public interface SubCommand {
 
     String getSyntax();
 
-    default String getPermission() {
-        return null;
-    }
+    String getPermission();
 
     default boolean allowConsole() {
         return false;

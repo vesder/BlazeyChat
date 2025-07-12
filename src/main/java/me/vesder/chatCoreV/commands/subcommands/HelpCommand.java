@@ -29,6 +29,11 @@ public class HelpCommand implements SubCommand {
     }
 
     @Override
+    public String getPermission() {
+        return "chatcorev.command.help";
+    }
+
+    @Override
     public boolean allowConsole() {
         return true;
     }
@@ -43,7 +48,7 @@ public class HelpCommand implements SubCommand {
             return;
         }
 
-        sender.sendMessage(miniMessage.deserialize(getDefaultHelpMessage()));
+        sender.sendMessage(miniMessage.deserialize(getDefaultHelpMessage(sender)));
 
     }
 
@@ -57,41 +62,32 @@ public class HelpCommand implements SubCommand {
         return List.of();
     }
 
-//    private final Map<String, String> cachedHelpMessages = new HashMap<>(); // name -> message
-
     private static final String HEADER = "<gradient:#55FFFF:#FFD700>==========</gradient> <light_purple><bold>ChatCoreV</bold></light_purple> <gradient:#FFD700:#55FFFF>==========</gradient>\n \n";
     private static final String FOOTER = "<gradient:#55FFFF:#FFD700>==========</gradient><gold>============</gold><gradient:#FFD700:#55FFFF>==========</gradient>";
 
-    private String getDefaultHelpMessage() {
-
-//        String commandName = "help";
-
-//        if (cachedHelpMessages.containsKey(commandName)) {
-//            return cachedHelpMessages.get(commandName);
-//        }
+    private String getDefaultHelpMessage(CommandSender sender) {
 
         StringBuilder helpMessageBuilder = new StringBuilder();
         helpMessageBuilder.append(HEADER);
 
         for (SubCommand subCommand : getSubCommands()) {
-            helpMessageBuilder.append(subCommand.getSyntax())
-                .append("\n")
-                .append(subCommand.getDescription())
-                .append("\n \n");
+
+            if (!sender.hasPermission(subCommand.getPermission())) {
+                continue;
+            }
+
+            helpMessageBuilder.append(String.format("""
+                <click:suggest_command:'%1$s'><hover:show_text:'<aqua>%1$s</aqua><br><gray>%2$s</gray><br><yellow>Tip: Click on the commands.</yellow>'>%1$s</hover></click>
+                <gray>%2$s</gray>
+                
+                """, subCommand.getSyntax(), subCommand.getDescription()));
         }
 
         helpMessageBuilder.append(FOOTER);
-//        cachedHelpMessages.put(commandName, parseLegacyColorCodes(helpMessageBuilder.toString()));
-//
-//        return cachedHelpMessages.get(commandName);
         return parseLegacyColorCodes(helpMessageBuilder.toString());
     }
 
     private String getHelpMessage(CommandSender sender, String commandName) {
-
-//        if (cachedHelpMessages.containsKey(commandName)) {
-//            return cachedHelpMessages.get(commandName);
-//        }
 
         StringBuilder helpMessageBuilder = new StringBuilder();
         helpMessageBuilder.append(HEADER);
@@ -102,9 +98,6 @@ public class HelpCommand implements SubCommand {
         }
 
         helpMessageBuilder.append(FOOTER);
-//        cachedHelpMessages.put(commandName, parseLegacyColorCodes(helpMessageBuilder.toString()));
-//
-//        return cachedHelpMessages.get(commandName);
         return parseLegacyColorCodes(helpMessageBuilder.toString());
     }
 

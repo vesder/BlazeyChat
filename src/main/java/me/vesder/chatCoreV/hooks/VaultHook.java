@@ -11,7 +11,9 @@ import static org.bukkit.Bukkit.getServer;
 
 public class VaultHook {
 
+    @Getter
     private static Economy econ = null;
+    @Getter
     private static Permission perms = null;
     @Getter
     private static Chat chat = null;
@@ -52,14 +54,6 @@ public class VaultHook {
 
     public static boolean hasChat() {
         return chat != null;
-    }
-
-    public static Economy getEconomy() {
-        return econ;
-    }
-
-    public static Permission getPermissions() {
-        return perms;
     }
 
     static {

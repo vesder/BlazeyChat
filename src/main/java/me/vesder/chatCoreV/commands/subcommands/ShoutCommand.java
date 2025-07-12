@@ -30,6 +30,11 @@ public class ShoutCommand implements SubCommand {
     }
 
     @Override
+    public String getPermission() {
+        return "chatcorev.command.shout";
+    }
+
+    @Override
     public void perform(Player player, String[] args) {
 
         Component toggleEnableMessage = MiniMessage.miniMessage().deserialize(TextUtils
