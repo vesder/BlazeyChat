@@ -14,4 +14,44 @@ commands:
       - ccv
     permission: chatcorev.command
     permission-message: You do not have permission to use this command.
-# chatcorev.color
+  chatspy:
+    description: Toggle chat spy mode to see other players messages.
+    usage: /<command>
+    permission: chatcorev.command.chatspy
+    permission-message: You do not have permission to use this command.
+  shout:
+    description: Send a message to all players.
+    usage: /<command>
+    permission: chatcorev.command.shout
+    permission-message: You do not have permission to use this command.
+  ads:
+    description: Broadcast ads and customize related settings.
+    usage: /<command>
+    permission: chatcorev.command.ads
+    permission-message: You do not have permission to use this command.
+
+permissions:
+  chatcorev.chat:
+    description: Allows the player to send chat messages.
+    default: true
+  chatcorev.color:
+    description: Allows use of color in chat messages.
+    default: op
+  chatcorev.command:
+    description: Allows using main chatcorev command.
+    default: true
+  chatcorev.command.help:
+    description: Allows usage of the help command.
+    default: true
+  chatcorev.command.reload:
+    description: Allows reloading the plugin configuration.
+    default: op
+  chatcorev.command.shout:
+    description: Allows the player to send a shout message to all players.
+    default: op
+  chatcorev.command.chatspy:
+    description: Allows toggling chat spy mode to see other players' messages.
+    default: op
+  chatcorev.command.ads:
+    description: Allows broadcasting advertisements and managing related settings.
+    default: true
