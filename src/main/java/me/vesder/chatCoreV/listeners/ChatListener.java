@@ -2,15 +2,16 @@ package me.vesder.chatCoreV.listeners;
 
 import io.papermc.paper.chat.ChatRenderer;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import me.vesder.chatCoreV.commands.CommandManager;
+import me.vesder.chatCoreV.commands.SubCommand;
 import me.vesder.chatCoreV.configs.ConfigManager;
 import me.vesder.chatCoreV.configs.customconfigs.FormatConfig;
-import me.vesder.chatCoreV.data.User;
+import me.vesder.chatCoreV.configs.customconfigs.SettingsConfig;
 import me.vesder.chatCoreV.data.UserManager;
 import me.vesder.chatCoreV.hooks.VaultHook;
+import me.vesder.chatCoreV.utils.TextUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -20,31 +21,34 @@ import org.bukkit.event.Listener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
-import static me.vesder.chatCoreV.utils.TextUtils.parseLegacyColorCodes;
+import static me.vesder.chatCoreV.data.UserManager.getChatSpyPlayers;
+import static me.vesder.chatCoreV.utils.TextUtils.buildFormattedComponent;
 
 public class ChatListener implements Listener {
 
     FormatConfig formatConfig = (FormatConfig) ConfigManager.getConfigManager().getCustomConfig("format.yml");
+    SettingsConfig settingsConfig = (SettingsConfig) ConfigManager.getConfigManager().getCustomConfig("settings.yml");
 
     @EventHandler
     private void onChat(AsyncChatEvent event) {
 
-//        System.out.println("CHAT " + VaultHook.hasChat());
-//        System.out.println("ECO " + VaultHook.hasEconomy());
-
         Player player = event.getPlayer();
 
-        setupViewers(event, player, getChatSpyPlayers(), event.getPlayer().getWorld().getPlayers());
+        if (!TextUtils.checkPermission(player, "chatcorev.chat")) {
+            player.sendMessage(TextUtils.buildFormattedComponent("<prefix>&cYou are not allowed to chat.", player, null, null, null));
+            return;
+        }
 
-//        if (VaultHook.hasPermissions()) {
-//            Later Fix Soft Depend Vault + @Getter For Vault Hook
-//        }
+        SubCommand shoutCommand = CommandManager.getSubCommand("shout");
+        String originalMessage = ((TextComponent) event.originalMessage()).content();
+
+        if (originalMessage.startsWith(settingsConfig.getShoutFlag()) && TextUtils.checkPermission(player, shoutCommand.getPermission())) {
+            originalMessage = originalMessage.substring(1).trim();
+        } else {
+            setupViewers(event, player, getChatSpyPlayers(), event.getPlayer().getWorld().getPlayers());
+        }
 
         List<String> playerGroups = List.of(VaultHook.getPerms().getPlayerGroups(player));
         List<String> formattedGroups = new ArrayList<>(formatConfig.getFormatSection().getKeys(false));
@@ -57,12 +61,13 @@ public class ChatListener implements Listener {
                 continue;
             }
 
-            formatedMessage = buildFormattedComponent(formatConfig.getFormatSection().getString(formattedGroup), player, event);
+            formatedMessage = buildFormattedComponent(formatConfig.getFormatSection().getString(formattedGroup), player, null, originalMessage, null);
             event.message(formatedMessage);
             break;
         }
 
         Component finalFormatedMessage = formatedMessage;
+        String finalOriginalMessage = originalMessage;
         event.renderer((source, sourceDisplayName, message, viewer) -> {
 
             if (finalFormatedMessage == null) {
@@ -74,7 +79,7 @@ public class ChatListener implements Listener {
                 }
 
                 if (getChatSpyPlayers().contains(viewer) && !viewer.equals(source)) {
-                    return Component.text("[SPY]" + " [" + source.getWorld().getName() + "] ").append(defaultRender);
+                    return buildFormattedComponent(settingsConfig.getChatspyFormat(), source, null, finalOriginalMessage, defaultRender);
                 }
 
                 return defaultRender;
@@ -85,7 +90,7 @@ public class ChatListener implements Listener {
             }
 
             if (getChatSpyPlayers().contains(viewer) && !viewer.equals(source)) {
-                return Component.text("[SPY]" + " [" + source.getWorld().getName() + "] ").append(finalFormatedMessage);
+                return buildFormattedComponent(settingsConfig.getChatspyFormat(), source, null, finalOriginalMessage, finalFormatedMessage);
             }
 
             return finalFormatedMessage;
@@ -107,55 +112,5 @@ public class ChatListener implements Listener {
             event.viewers().addAll(extraViewer);
         }
 
-    }
-
-    private Component buildFormattedComponent(String text, Player player, AsyncChatEvent event) {
-
-        text = parseLegacyColorCodes(text);
-
-        boolean allowColor = player.hasPermission("chatcorev.color");
-
-        if (!allowColor && VaultHook.hasPermissions()) {
-            allowColor = VaultHook.getPerms().playerHas(player, "chatcorev.color");
-        }
-
-        if (allowColor) {
-
-            return MiniMessage.miniMessage().deserialize(text,
-                Placeholder.component("message", MiniMessage.miniMessage().deserialize(parseLegacyColorCodes(((TextComponent) event.originalMessage()).content()))), //bug
-                Placeholder.unparsed("username", player.getName()),
-                Placeholder.component("displayname", player.displayName()),
-                Placeholder.parsed("prefix", VaultHook.getChat().getPlayerPrefix(player)),
-                Placeholder.parsed("suffix", VaultHook.getChat().getPlayerSuffix(player)),
-                Placeholder.unparsed("group", VaultHook.getPerms().getPrimaryGroup(player)),
-                Placeholder.unparsed("worldname", player.getWorld().getName())
-            );
-
-        }
-
-        return MiniMessage.miniMessage().deserialize(text,
-            Placeholder.component("message", event.originalMessage()), // without color
-            Placeholder.unparsed("username", player.getName()),
-            Placeholder.component("displayname", player.displayName()),
-            Placeholder.parsed("prefix", VaultHook.getChat().getPlayerPrefix(player)),
-            Placeholder.parsed("suffix", VaultHook.getChat().getPlayerSuffix(player)),
-            Placeholder.unparsed("group", VaultHook.getPerms().getPrimaryGroup(player)),
-            Placeholder.unparsed("worldname", player.getWorld().getName())
-        );
-
-    }
-
-    private Set<Player> getChatSpyPlayers() {
-
-        Set<Player> set = new HashSet<>();
-
-        for (Map.Entry<UUID, User> user : UserManager.userMap.entrySet()) {
-
-            if (user.getValue().isChatSpy()) {
-                set.add(Bukkit.getPlayer(user.getKey()));
-            }
-        }
-
-        return set;
     }
 }

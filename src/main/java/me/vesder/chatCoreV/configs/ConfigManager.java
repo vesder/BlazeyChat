@@ -77,6 +77,29 @@ public class ConfigManager {
 
     }
 
+    public void load(String configName) {
+
+        CustomConfig customConfig = getCustomConfig(configName);
+
+        customConfig.file = new File(ChatCoreV.getPlugin().getDataFolder(), customConfig.getName());
+
+        if (!customConfig.file.exists()) {
+            ChatCoreV.getPlugin().saveResource(customConfig.getName(), false);
+        }
+
+        customConfig.config = new YamlConfiguration();
+        customConfig.config.options().parseComments(true);
+
+        try {
+            customConfig.config.load(customConfig.file);
+            customConfig.loadValues();
+        } catch (Exception ex) {
+            Bukkit.getLogger().log(Level.WARNING,
+                "Unexpected exception while loading config " + "( " + customConfig.getName() + " )", ex);
+        }
+
+    }
+
     public void save() {
 
         for (CustomConfig customConfig : getCustomConfigs()) {

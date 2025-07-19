@@ -3,7 +3,9 @@ package me.vesder.chatCoreV.commands;
 import me.vesder.chatCoreV.commands.subcommands.AdsCommand;
 import me.vesder.chatCoreV.commands.subcommands.ChatSpyCommand;
 import me.vesder.chatCoreV.commands.subcommands.HelpCommand;
+import me.vesder.chatCoreV.commands.subcommands.MsgCommand;
 import me.vesder.chatCoreV.commands.subcommands.ReloadCommand;
+import me.vesder.chatCoreV.commands.subcommands.ReplyCommand;
 import me.vesder.chatCoreV.commands.subcommands.ShoutCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -30,7 +32,9 @@ public class CommandManager implements TabExecutor {
             new ReloadCommand(),
             new ShoutCommand(),
             new ChatSpyCommand(),
-            new AdsCommand()
+            new AdsCommand(),
+            new MsgCommand(),
+            new ReplyCommand()
 
         );
 
@@ -53,8 +57,8 @@ public class CommandManager implements TabExecutor {
     }
 
     // make better HelpMessage system later
-    public static void sendHelpMessage(Player player, String name) {
-        getSubCommand("help").perform(player, new String[]{"help", name});
+    public static void sendHelpMessage(CommandSender sender, String name) {
+        getSubCommand("help").perform(sender, new String[]{"help", name});
     }
 
     /**
@@ -87,8 +91,41 @@ public class CommandManager implements TabExecutor {
         return filteredNames;
     }
 
+    private String[] prependArg(String first, String[] args) {
+
+        String[] newArgs = new String[args.length + 1];
+        newArgs[0] = first.toLowerCase();
+        System.arraycopy(args, 0, newArgs, 1, args.length);
+
+        return newArgs;
+    }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+
+        if (!(command.getName().equalsIgnoreCase("ccv") || command.getName().equalsIgnoreCase("chatcorev"))) {
+
+            SubCommand subCommand = getSubCommand(command.getName().toLowerCase());
+
+            String[] prependedArgs = prependArg(command.getName(), args);
+
+            if (!sender.hasPermission(subCommand.getPermission())) {
+                return true;
+            }
+
+            if (subCommand.allowConsole()) {
+                subCommand.perform(sender, prependedArgs);
+                return true;
+            }
+
+            if (!(sender instanceof Player player)) {
+                sender.sendMessage("Only players can use this command");
+                return true;
+            }
+
+            subCommand.perform(player, prependedArgs);
+            return true;
+        }
 
         if (args.length >= 1 && getSubCommandNames(sender).contains(args[0].toLowerCase())) {
 
@@ -118,6 +155,17 @@ public class CommandManager implements TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+
+        if (!(command.getName().equalsIgnoreCase("ccv") || command.getName().equalsIgnoreCase("chatcorev"))) {
+
+            String[] prependedArgs = prependArg(command.getName(), args);
+
+            if (prependedArgs.length >= 2 && getSubCommandNames(sender).contains(prependedArgs[0].toLowerCase())) {
+                return getSubCommand(prependedArgs[0]).getSubcommandArguments(sender, prependedArgs);
+            }
+
+            return List.of();
+        }
 
         if (args.length == 1) {
             return getSubCommandNames(sender);

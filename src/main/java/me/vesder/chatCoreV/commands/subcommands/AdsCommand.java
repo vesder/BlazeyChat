@@ -37,7 +37,7 @@ public class AdsCommand implements SubCommand {
     @Override
     public void perform(Player player, String[] args) {
 
-        if (args.length >= 2) {
+        if (args.length >= 4) {
 
             if (args[2].equals("sound")) {
                 User user = UserManager.getUser(player.getUniqueId());

@@ -15,21 +15,26 @@ public class ConfigUtils {
         configManager.save(configName);
     }
 
-    public static String getStringConfig(String configName,String path) {
+    public static String getStringConfig(String configName, String path) {
 
         return configManager.getCustomConfig(configName).config.getString(path);
     }
 
-    public static List<String> getStringListConfig(String configName,String path) {
+    public static List<String> getStringListConfig(String configName, String path) {
 
         return configManager.getCustomConfig(configName).config.getStringList(path);
 
     }
 
-    public static ConfigurationSection getConfigSection(String configName,String path) {
+    public static ConfigurationSection getConfigSection(String configName, String path) {
 
         return configManager.getCustomConfig(configName).config.getConfigurationSection(path);
 
+    }
+
+    public static Boolean getBooleanConfig(String configName, String path) {
+
+        return configManager.getCustomConfig(configName).config.getBoolean(path);
     }
 
 }

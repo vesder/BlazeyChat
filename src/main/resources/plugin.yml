@@ -29,6 +29,20 @@ commands:
     usage: /<command>
     permission: chatcorev.command.ads
     permission-message: You do not have permission to use this command.
+  msg:
+    description: Sends a private message to another player
+    usage: /<command>
+    aliases:
+      - tell
+    permission: chatcorev.command.msg
+    permission-message: You do not have permission to use this command.
+  reply:
+    description: Reply to your current reply target.
+    usage: /<command>
+    aliases:
+      - r
+    permission: chatcorev.command.reply
+    permission-message: You do not have permission to use this command.
 
 permissions:
   chatcorev.chat:
@@ -54,4 +68,10 @@ permissions:
     default: op
   chatcorev.command.ads:
     description: Allows broadcasting advertisements and managing related settings.
+    default: true
+  chatcorev.command.msg:
+    description: Allows a player to send private messages to others.
+    default: true
+  chatcorev.command.reply:
+    description: Allows a player to reply to their last reply target.
     default: true

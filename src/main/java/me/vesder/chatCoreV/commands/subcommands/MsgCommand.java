@@ -1,0 +1,109 @@
+package me.vesder.chatCoreV.commands.subcommands;
+
+import me.vesder.chatCoreV.commands.SubCommand;
+import me.vesder.chatCoreV.configs.ConfigManager;
+import me.vesder.chatCoreV.configs.customconfigs.SettingsConfig;
+import me.vesder.chatCoreV.data.User;
+import me.vesder.chatCoreV.data.UserManager;
+import me.vesder.chatCoreV.utils.TextUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static me.vesder.chatCoreV.commands.CommandManager.sendHelpMessage;
+
+public class MsgCommand implements SubCommand {
+
+    SettingsConfig settingsConfig = (SettingsConfig) ConfigManager.getConfigManager().getCustomConfig("settings.yml");
+
+    @Override
+    public String getName() {
+        return "msg";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Send a private message to another player on the server.";
+    }
+
+    @Override
+    public String getSyntax() {
+        return "/ccv msg <player>";
+    }
+
+    @Override
+    public String getPermission() {
+        return "chatcorev.command.msg";
+    }
+
+    @Override
+    public void perform(Player player, String[] args) {
+
+        if (args.length > 1) {
+
+            Player receiver = Bukkit.getPlayer(args[1]);
+
+            if (receiver == null) {
+                player.sendMessage(TextUtils.buildFormattedComponent(settingsConfig.getPvMessagesNotFoundError(), player, null, null, null));
+                return;
+            }
+
+            if (player.equals(receiver)) {
+                player.sendMessage(TextUtils.buildFormattedComponent(settingsConfig.getPvMessagesSelfMsgError(), player, null, null, null));
+                return;
+            }
+
+            if (args.length == 2) {
+                player.sendMessage(TextUtils.buildFormattedComponent(settingsConfig.getPvMessagesNoMsgError(), player, null, null, null));
+                return;
+            }
+
+            String message = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+
+            User senderUser = UserManager.getUser(player.getUniqueId());
+            for (String action : settingsConfig.getPvMessagesSenderActions()) {
+                TextUtils.runActionDispatcher(action, player, player, receiver, message, null);
+            }
+            senderUser.setLastMsgSender(receiver.getUniqueId());
+
+            User receiverUser = UserManager.getUser(receiver.getUniqueId());
+            if (receiverUser.getIgnoredPlayers() == null || !receiverUser.getIgnoredPlayers().contains(player.getUniqueId())) {
+                for (String action : settingsConfig.getPvMessagesReceiverActions()) {
+                    TextUtils.runActionDispatcher(action, receiver, player, receiver, message, null);
+                }
+                receiverUser.setLastMsgSender(player.getUniqueId());
+            }
+
+            for (Player spyPlayer : UserManager.getChatSpyPlayers()) {
+
+                if (spyPlayer.equals(player) || spyPlayer.equals(receiver)) {
+                    continue;
+                }
+
+                if (receiverUser.getIgnoredPlayers().contains(player.getUniqueId())) {
+                    spyPlayer.sendMessage(TextUtils.buildFormattedComponent("<prefix><displayname> is ignoring <receiver-displayname>", player, receiver, null, null));
+                }
+
+                for (String action : settingsConfig.getPvMessagesReceiverActions()) {
+                    TextUtils.runActionDispatcher(action, spyPlayer, player, receiver, message, null);
+                }
+            }
+            return;
+        }
+
+        sendHelpMessage(player, getName());
+    }
+
+    @Override
+    public List<String> getSubcommandArguments(CommandSender sender, String[] args) {
+
+        if (args.length == 2) {
+            return null;
+        }
+
+        return List.of();
+    }
+}

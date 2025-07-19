@@ -23,6 +23,6 @@ public interface SubCommand {
 
     default void perform(CommandSender sender, String[] args) {}
 
-    List<String> getSubcommandArguments(CommandSender sender,String[] args);
+    List<String> getSubcommandArguments(CommandSender sender, String[] args);
 
 }

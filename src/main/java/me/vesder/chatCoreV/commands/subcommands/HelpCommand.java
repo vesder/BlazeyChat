@@ -43,7 +43,7 @@ public class HelpCommand implements SubCommand {
 
         MiniMessage miniMessage = MiniMessage.miniMessage();
 
-        if (args.length >= 2 && getSubCommandNames(sender).contains(args[1].toLowerCase())) {
+        if (args.length >= 2 && getSubCommandNames(sender).contains(args[1].toLowerCase()) && !args[1].equalsIgnoreCase("help")) {
             sender.sendMessage(miniMessage.deserialize(getHelpMessage(sender, args[1].toLowerCase())));
             return;
         }
@@ -89,10 +89,16 @@ public class HelpCommand implements SubCommand {
 
     private String getHelpMessage(CommandSender sender, String commandName) {
 
+        List<String> subArgs = getSubCommand(commandName).getSubcommandArguments(sender, new String[]{commandName, ""});
+
+        if (subArgs == null || subArgs.isEmpty()) {
+            return getDefaultHelpMessage(sender);
+        }
+
         StringBuilder helpMessageBuilder = new StringBuilder();
         helpMessageBuilder.append(HEADER);
 
-        for (String subArg : getSubCommand(commandName).getSubcommandArguments(sender, new String[]{commandName, ""})) {
+        for (String subArg : subArgs) {
             helpMessageBuilder.append("/ccv ").append(commandName).append(" ").append(subArg)
                 .append("\n \n");
         }

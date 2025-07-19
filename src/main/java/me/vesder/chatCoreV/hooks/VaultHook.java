@@ -18,7 +18,7 @@ public class VaultHook {
     @Getter
     private static Chat chat = null;
 
-    private VaultHook () {}
+    private VaultHook() {}
 
     private static void setupEconomy() {
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);

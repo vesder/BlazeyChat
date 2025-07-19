@@ -1,7 +1,12 @@
 package me.vesder.chatCoreV.data;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class UserManager {
@@ -17,6 +22,20 @@ public class UserManager {
         userMap.put(uuid, new User());
         return userMap.get(uuid);
 
+    }
+
+    public static Set<Player> getChatSpyPlayers() {
+
+        Set<Player> set = new HashSet<>();
+
+        for (Map.Entry<UUID, User> user : UserManager.userMap.entrySet()) {
+
+            if (user.getValue().isChatSpy() && Bukkit.getPlayer(user.getKey()) != null) {
+                set.add(Bukkit.getPlayer(user.getKey()));
+            }
+        }
+
+        return set;
     }
 
 }

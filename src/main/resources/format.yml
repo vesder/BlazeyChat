@@ -2,8 +2,8 @@
 # <message> - The content of the chat message.
 # <username> - The sender's username.
 # <displayname> - The sender's display name.
-# <prefix> - The sender's prefix, supplied by a permissions plugin.
-# <suffix> - The sender's suffix, supplied by a permissions plugin.
+# <player-prefix> - The sender's prefix, supplied by a permissions plugin.
+# <player-suffix> - The sender's suffix, supplied by a permissions plugin.
 # <group> - The sender's primary group name, supplied by a permissions plugin.
 # <worldname> - The full name of the sender's current world.
 #
