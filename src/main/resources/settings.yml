@@ -1,26 +1,62 @@
-# evrything is optinal you can disable them if you dont want them
+################################################################################
+# ChatCoreV - Main Configuration
+#
+# Everything is optional. Remove or comment out sections you don't need.
+# Actions are executed in order; leave a list empty ([]) to disable it.
+################################################################################
+
+# ------------------------------------------------------------------------------
+# Available placeholders (provided by the plugin itself):
+# <message>          - The content of the chat message.
+# <username>         - The sender's username.
+# <displayname>      - The sender's display name (Component).
+# <player-prefix>    - The sender's prefix (from Vault/permissions plugin).
+# <player-suffix>    - The sender's suffix (from Vault/permissions plugin).
+# <group>            - The sender's primary group (from permissions plugin).
+# <worldname>        - The sender's current world name.
+#
+# Receiver placeholders (only when a receiver is present in context):
+# <receiver-username>     - Receiver's username.
+# <receiver-displayname>  - Receiver's display name.
+# <receiver-prefix>       - Receiver's prefix (Vault).
+# <receiver-suffix>       - Receiver's suffix (Vault).
+# <receiver-group>        - Receiver's primary group.
+# <receiver-worldname>    - Receiver's world name.
+#
+# Formatted/processed placeholders:
+# <prefix>            - Global prefix (defaults.prefix below).
+# <formated-message>  - formatted version of the message (if provided).
+#
+# Supports MiniMessage formatting (colors, gradients, hover, click, etc.)
+# MiniMessage live editor: https://webui.advntr.dev/
+# Legacy color codes (&c, &e, etc.) are also supported.
+#
+# Supports PlaceholderAPI placeholders as well!
+# Full list: https://wiki.placeholderapi.com/users/placeholder-list/
+#
+# Action prefixes (case-sensitive):
+#   CHAT:<message>        → Sends a chat message
+#   ACTIONBAR:<message>   → Shows an actionbar
+#   TITLE:<message>       → Shows a title
+#   SOUND:<sound_name>    → Plays a sound (see list below)
+#     Sound list: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+#   COMMAND:<command>     → Runs a command as the player
+# ------------------------------------------------------------------------------
 
 defaults:
-  prefix: "&6[ChatCore]&r "
-  # not complete
-
-#custom-prefixes:
-#  prefix2: "[ PREFIX 2 ]"
-#
-#chat:
-#  allowed-fonts: ""
+  prefix: "<#FDD017><bold>ChatCore</bold></#FDD017> <#EB00FF>></#EB00FF>"
 
 reload:
   all:
     actions:
-      - "CHAT:<prefix>&aAll configs reloaded successfully!"
+      - "CHAT:<prefix> <#00FFE0>All configs reloaded successfully!</#00FFE0>"
   specific:
     actions:
-      - "CHAT:<prefix>&aspecific config reloaded successfully!"
+      - "CHAT:<prefix> <#00FFE0>specific config reloaded successfully!</#00FFE0>"
 
 shout:
   flag: "#"
-  format: "[SHOUT] <message>"
+  format: "<#FDD017>Shout</#FDD017> <gray>|</gray> <formated-message>"
   sender:
     actions:
       - "SOUND:ENTITY_PLAYER_LEVELUP"
@@ -29,71 +65,40 @@ shout:
       - ""
   enable:
     actions:
-      - "CHAT:<prefix>&aShout enabled!"
+      - "CHAT:<prefix> <#00FF29>Shout enabled!</#00FF29>"
   disable:
     actions:
-      - "CHAT:<prefix>&cShout disabled!"
+      - "CHAT:<prefix> <#FF2200>Shout disabled!</#FF2200>"
 
-#placeholder <formated-message>
 chatspy:
   on-join: false
-  format: "[SPY] [<worldname>] <formated-message>"
+  format: "<#EB00FF>Spy</#EB00FF> <#FDD017><worldname></#FDD017> <dark_gray>|</dark_gray> <formated-message>"
   enable:
     actions:
-      - "CHAT:<prefix>&aChatSpy enabled!"
+      - "CHAT:<prefix> <#00FF29>ChatSpy enabled!</#00FF29>"
   disable:
     actions:
-      - "CHAT:<prefix>&cChatSpy disabled!"
+      - "CHAT:<prefix> <#FF2200>ChatSpy disabled!</#FF2200>"
 
-#placeholder <receiver>
-# Available actions (case-sensitive, prefix-based):
-# - CHAT:<message>           → Send chat message
-# - ACTIONBAR:<message>      → Show actionbar
-# - TITLE:<message>          → Show title (subtitle optional via "|")
-# - SOUND:<sound_name>       → Play a sound (e.g. ENTITY_CAT_PURREOW)
-# - COMMAND:<command>        → Run command as player (e.g. /msglog <username>)
 pv-messages:
   sender:
     actions:
-      - "CHAT:<prefix>[MSG] <username> to <receiver-displayname>: <message>"
+      - "CHAT:<click:suggest_command:'/r '><hover:show_text:'Click here to reply'><#FDD017>Msg</#FDD017> <gray>|</gray> <#00FFE0>from</#00FFE0> <#EB00FF><username></#EB00FF> <#00FFE0>to</#00FFE0> <#EB00FF><receiver-username></#EB00FF><gray> ></gray></hover></click> <message>"
       - "SOUND:ENTITY_PLAYER_LEVELUP"
   receiver:
     actions:
-      - "CHAT:<prefix>[MSG] <username> to <receiver-displayname>: <message>"
+      - "CHAT:<click:suggest_command:'/r '><hover:show_text:'Click here to reply'><#FDD017>Msg</#FDD017> <gray>|</gray> <#00FFE0>from</#00FFE0> <#EB00FF><username></#EB00FF> <#00FFE0>to</#00FFE0> <#EB00FF><receiver-username></#EB00FF><gray> ></gray></hover></click> <message>"
       - "SOUND:ENTITY_PLAYER_LEVELUP"
   reply:
     set:
       actions:
-        - "ACTIONBAR:&bReplyTarget is set to <receiver-displayname>"
+        - "ACTIONBAR:<#00FFE0>Now replying to:</#00FFE0> <#FDD017><receiver-displayname></#FDD017>"
         - "SOUND:ENTITY_VILLAGER_YES"
     not-found:
       actions:
-        - "ACTIONBAR:&cReplyTarget is not found"
+        - "ACTIONBAR:<#FF2200>No target to reply</#FF2200>"
         - "SOUND:ENTITY_VILLAGER_NO"
   errors:
-    no-msg: "<prefix>you need to provide message"
-    self-msg: "<prefix>You cannot message yourself."
-    not-found: "<prefix>Player not found."
-
-
-ads:
-  setting:
-    cost: 1000
-    sounds:
-      - ""
-      - ""
-    headers:
-      "========="
-    footers:
-      - "============="
-    commands:
-  actions:
-    toggle:
-      enable:
-        message: "Ads enabled!"
-        sound: ""
-        command: ""
-      disable:
-        message: "Ads disabled!"
-        sound: ""
-        command: ""
+    no-msg: "<prefix> <#FF2200>you need to provide message.</#FF2200>"
+    self-msg: "<prefix> <#FF2200>You cannot message yourself.</#FF2200>"
+    not-found: "<prefix> <#FF2200>Player not found.</#FF2200>"

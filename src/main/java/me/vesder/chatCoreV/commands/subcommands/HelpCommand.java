@@ -62,8 +62,8 @@ public class HelpCommand implements SubCommand {
         return List.of();
     }
 
-    private static final String HEADER = "<gradient:#55FFFF:#FFD700>==========</gradient> <light_purple><bold>ChatCoreV</bold></light_purple> <gradient:#FFD700:#55FFFF>==========</gradient>\n \n";
-    private static final String FOOTER = "<gradient:#55FFFF:#FFD700>==========</gradient><gold>============</gold><gradient:#FFD700:#55FFFF>==========</gradient>";
+    private static final String HEADER = "<gradient:#00FFE0:#EB00FF>==========</gradient> <#FDD017><bold>ChatCoreV</bold></#FDD017> <gradient:#EB00FF:#00FFE0>==========</gradient>\n \n";
+    private static final String FOOTER = "<gradient:#00FFE0:#EB00FF>==========</gradient><#EB00FF>============</#EB00FF><gradient:#EB00FF:#00FFE0>==========</gradient>";
 
     private String getDefaultHelpMessage(CommandSender sender) {
 

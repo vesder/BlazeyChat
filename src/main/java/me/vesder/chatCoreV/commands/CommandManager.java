@@ -1,6 +1,5 @@
 package me.vesder.chatCoreV.commands;
 
-import me.vesder.chatCoreV.commands.subcommands.AdsCommand;
 import me.vesder.chatCoreV.commands.subcommands.ChatSpyCommand;
 import me.vesder.chatCoreV.commands.subcommands.HelpCommand;
 import me.vesder.chatCoreV.commands.subcommands.MsgCommand;
@@ -32,7 +31,7 @@ public class CommandManager implements TabExecutor {
             new ReloadCommand(),
             new ShoutCommand(),
             new ChatSpyCommand(),
-            new AdsCommand(),
+//            new AdsCommand(),
             new MsgCommand(),
             new ReplyCommand()
 

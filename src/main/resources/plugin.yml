@@ -1,9 +1,9 @@
 name: ChatCoreV
-version: '1.0'
+version: '1.0-BETA'
 main: me.vesder.chatCoreV.ChatCoreV
 api-version: '1.20'
 authors: [ vesder ]
-description: Chat Core Plugin
+description: A lightweight and customizable chat plugin.
 softdepend:
   - Vault
 commands:
@@ -23,11 +23,6 @@ commands:
     description: Send a message to all players.
     usage: /<command>
     permission: chatcorev.command.shout
-    permission-message: You do not have permission to use this command.
-  ads:
-    description: Broadcast ads and customize related settings.
-    usage: /<command>
-    permission: chatcorev.command.ads
     permission-message: You do not have permission to use this command.
   msg:
     description: Sends a private message to another player
@@ -66,9 +61,6 @@ permissions:
   chatcorev.command.chatspy:
     description: Allows toggling chat spy mode to see other players' messages.
     default: op
-  chatcorev.command.ads:
-    description: Allows broadcasting advertisements and managing related settings.
-    default: true
   chatcorev.command.msg:
     description: Allows a player to send private messages to others.
     default: true

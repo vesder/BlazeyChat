@@ -7,6 +7,7 @@ import me.vesder.chatCoreV.commands.SubCommand;
 import me.vesder.chatCoreV.configs.ConfigManager;
 import me.vesder.chatCoreV.configs.customconfigs.FormatConfig;
 import me.vesder.chatCoreV.configs.customconfigs.SettingsConfig;
+import me.vesder.chatCoreV.data.User;
 import me.vesder.chatCoreV.data.UserManager;
 import me.vesder.chatCoreV.hooks.VaultHook;
 import me.vesder.chatCoreV.utils.TextUtils;
@@ -37,16 +38,23 @@ public class ChatListener implements Listener {
         Player player = event.getPlayer();
 
         if (!TextUtils.checkPermission(player, "chatcorev.chat")) {
-            player.sendMessage(TextUtils.buildFormattedComponent("<prefix>&cYou are not allowed to chat.", player, null, null, null));
+            player.sendMessage(buildFormattedComponent("<prefix> <#FF2200>You are not allowed to chat.</#FF2200>", player, null, null, null));
+            event.setCancelled(true);
             return;
         }
 
         SubCommand shoutCommand = CommandManager.getSubCommand("shout");
         String originalMessage = ((TextComponent) event.originalMessage()).content();
+        User user = UserManager.getUser(player.getUniqueId());
 
-        if (originalMessage.startsWith(settingsConfig.getShoutFlag()) && TextUtils.checkPermission(player, shoutCommand.getPermission())) {
+        boolean isMsgShout;
+        if (user.isShout()) {
+            isMsgShout = true;
+        } else if (originalMessage.startsWith(settingsConfig.getShoutFlag()) && TextUtils.checkPermission(player, shoutCommand.getPermission())) {
             originalMessage = originalMessage.substring(1).trim();
+            isMsgShout = true;
         } else {
+            isMsgShout = false;
             setupViewers(event, player, getChatSpyPlayers(), event.getPlayer().getWorld().getPlayers());
         }
 
@@ -78,6 +86,10 @@ public class ChatListener implements Listener {
                     return Component.text("[" + source.getWorld().getName() + "] ").append(defaultRender);
                 }
 
+                if (isMsgShout) {
+                    return buildFormattedComponent(settingsConfig.getShoutFormat(), source, null, finalOriginalMessage, defaultRender);
+                }
+
                 if (getChatSpyPlayers().contains(viewer) && !viewer.equals(source)) {
                     return buildFormattedComponent(settingsConfig.getChatspyFormat(), source, null, finalOriginalMessage, defaultRender);
                 }
@@ -87,6 +99,10 @@ public class ChatListener implements Listener {
 
             if (viewer instanceof ConsoleCommandSender) {
                 return Component.text("[" + source.getWorld().getName() + "] ").append(finalFormatedMessage);
+            }
+
+            if (isMsgShout) {
+                return buildFormattedComponent(settingsConfig.getShoutFormat(), source, null, finalOriginalMessage, finalFormatedMessage);
             }
 
             if (getChatSpyPlayers().contains(viewer) && !viewer.equals(source)) {
@@ -101,10 +117,6 @@ public class ChatListener implements Listener {
     // make it more dynamic later
     @SafeVarargs
     private void setupViewers(AsyncChatEvent event, Player player, Collection<Player>... extraViewers) {
-
-        if (UserManager.getUser(player.getUniqueId()).isShout()) {
-            return;
-        }
 
         event.viewers().clear();
         event.viewers().add(Bukkit.getConsoleSender());
