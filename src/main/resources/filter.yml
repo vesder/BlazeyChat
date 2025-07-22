@@ -1,3 +1,18 @@
+# ChatCoreV - Chat Filter Configuration (Not Complete)
 replace-mode:
-cencore-mode
+  actions:
+    - "CHAT:<prefix> <#FF2200>Warning Please avoid bad language !</#FF2200>"
+  words:
+    "kos nnt": "kirm to kos nnm"
+censor-mode:
+  character: "*"
+  actions:
+    - "CHAT:<prefix> <#FF2200>Warning Please avoid bad language !</#FF2200>"
+  words:
+    - "kir"
+    - "kos"
 block-mode:
+  actions:
+    - "CHAT:<prefix> <#FF2200>Your message was blocked due to inappropriate language !</#FF2200>"
+  words:
+    - "jende"

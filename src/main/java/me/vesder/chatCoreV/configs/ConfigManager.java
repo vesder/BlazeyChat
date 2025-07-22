@@ -1,6 +1,7 @@
 package me.vesder.chatCoreV.configs;
 
 import me.vesder.chatCoreV.ChatCoreV;
+import me.vesder.chatCoreV.configs.customconfigs.FilterConfig;
 import me.vesder.chatCoreV.configs.customconfigs.SettingsConfig;
 import me.vesder.chatCoreV.configs.customconfigs.FormatConfig;
 import org.bukkit.Bukkit;
@@ -26,7 +27,8 @@ public class ConfigManager {
         registerCustomConfigs(
 
             new SettingsConfig(),
-            new FormatConfig()
+            new FormatConfig(),
+            new FilterConfig()
 
         );
 
