@@ -1,7 +1,6 @@
 # ChatCoreV - Chat Filter Configuration (Not Complete)
 replace-mode:
-  actions:
-    - "CHAT:<prefix> <#FF2200>Warning Please avoid bad language !</#FF2200>"
+  actions: []
   words:
     "kos nnt": "kirm to kos nnm"
 censor-mode:

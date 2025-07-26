@@ -55,6 +55,16 @@ public class ChatListener implements Listener {
 
         String originalMessageLowerCase = originalMessage.toLowerCase();
 
+        for (String blockWords : filterConfig.getBlockWords()) {
+            if (originalMessageLowerCase.contains(blockWords.toLowerCase())) {
+                for (String action : filterConfig.getBlockActions()) {
+                    TextUtils.runActionDispatcher(action, player, player, null, originalMessage, null);
+                }
+                event.setCancelled(true);
+                return;
+            }
+        }
+
         for (String replaceWord : filterConfig.getReplaceWordsSection().getKeys(false)) {
 
             if (originalMessageLowerCase.contains(replaceWord.toLowerCase())) {
@@ -71,16 +81,6 @@ public class ChatListener implements Listener {
                     TextUtils.runActionDispatcher(action, player, player, null, originalMessage, null);
                 }
                 originalMessage = originalMessage.replaceAll("(?i)" + Pattern.quote(censorWord), String.valueOf(filterConfig.getCensorChar()).repeat(censorWord.length()));
-            }
-        }
-
-        for (String blockWords : filterConfig.getBlockWords()) {
-            if (originalMessageLowerCase.contains(blockWords.toLowerCase())) {
-                for (String action : filterConfig.getBlockActions()) {
-                    TextUtils.runActionDispatcher(action, player, player, null, originalMessage, null);
-                }
-                event.setCancelled(true);
-                return;
             }
         }
 
