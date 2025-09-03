@@ -45,7 +45,7 @@ public class TextUtils {
         return text;
     }
 
-    public static Component buildFormattedComponent(String text, Player player, Player receiver, String originalMessage, Component formatedMessage) {
+    public static Component buildFormattedComponent(String text, Player player, Player receiver, String originalMessage, Component formattedMessage) {
 
         text = parseLegacyColorCodes(text);
 
@@ -53,7 +53,7 @@ public class TextUtils {
 
         TagResolver resolver = TagResolver.resolver(
             Placeholder.component("message", originalMessage != null ? (allowColor ? MiniMessage.miniMessage().deserialize(parseLegacyColorCodes(originalMessage)) : Component.text(originalMessage)) : Component.empty()),
-            Placeholder.component("formated-message", formatedMessage != null ? formatedMessage : Component.empty()),
+            Placeholder.component("formatted-message", formattedMessage != null ? formattedMessage : Component.empty()),
             Placeholder.component("prefix", MiniMessage.miniMessage().deserialize(parseLegacyColorCodes(settingsConfig.getDefaultPrefix()))),
 
             Placeholder.unparsed("username", player.getName()),
@@ -75,11 +75,11 @@ public class TextUtils {
 
     }
 
-    public static void runActionDispatcher(String text, CommandSender target, Player player, Player receiver, String originalMessage, Component formatedMessage) {
+    public static void runActionDispatcher(String action, CommandSender target, Player player, Player receiver, String originalMessage, Component formattedMessage) {
 
-        if (text.startsWith("CHAT:")) {
-            text = text.substring(5).trim();
-            target.sendMessage(buildFormattedComponent(text, player, receiver, originalMessage, formatedMessage));
+        if (action.startsWith("CHAT:")) {
+            action = action.substring(5).trim();
+            target.sendMessage(buildFormattedComponent(action, player, receiver, originalMessage, formattedMessage));
             return;
         }
 
@@ -88,32 +88,32 @@ public class TextUtils {
             return;
         }
 
-        if (text.startsWith("ACTIONBAR:")) {
-            text = text.substring(10).trim();
-            targetPlayer.sendActionBar(buildFormattedComponent(text, player, receiver, originalMessage, formatedMessage));
+        if (action.startsWith("ACTIONBAR:")) {
+            action = action.substring(10).trim();
+            targetPlayer.sendActionBar(buildFormattedComponent(action, player, receiver, originalMessage, formattedMessage));
             return;
         }
 
-        if (text.startsWith("TITLE:")) { // sub title support later
-            text = text.substring(6).trim();
+        if (action.startsWith("TITLE:")) { // sub title support later
+            action = action.substring(6).trim();
             targetPlayer.showTitle(
                 Title.title(
-                    buildFormattedComponent(text, player, receiver, originalMessage, formatedMessage),
+                    buildFormattedComponent(action, player, receiver, originalMessage, formattedMessage),
                     Component.empty()
                 )
             );
             return;
         }
 
-        if (text.startsWith("SOUND:")) {
-            text = text.substring(6).trim();
-            targetPlayer.playSound(targetPlayer.getLocation(), Sound.valueOf(text), 5.0F, 1.0F);
+        if (action.startsWith("SOUND:")) {
+            action = action.substring(6).trim();
+            targetPlayer.playSound(targetPlayer.getLocation(), Sound.valueOf(action), 5.0F, 1.0F);
             return;
         }
 
-        if (text.startsWith("COMMAND:")) {
-            text = text.substring(8).trim();
-            targetPlayer.performCommand(text);
+        if (action.startsWith("COMMAND:")) {
+            action = action.substring(8).trim();
+            targetPlayer.performCommand(action);
             return;
         }
     }

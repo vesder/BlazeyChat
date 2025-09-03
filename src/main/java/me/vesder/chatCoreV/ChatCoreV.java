@@ -30,6 +30,7 @@ public final class ChatCoreV extends JavaPlugin {
         Objects.requireNonNull(getCommand("chatspy")).setExecutor(new CommandManager());
         Objects.requireNonNull(getCommand("msg")).setExecutor(new CommandManager());
         Objects.requireNonNull(getCommand("reply")).setExecutor(new CommandManager());
+        Objects.requireNonNull(getCommand("ignore")).setExecutor(new CommandManager());
 //        Objects.requireNonNull(getCommand("ads")).setExecutor(new CommandManager());
 
         ConfigManager.getConfigManager().load();

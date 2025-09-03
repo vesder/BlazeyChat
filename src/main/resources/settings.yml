@@ -25,7 +25,7 @@
 #
 # Formatted/processed placeholders:
 # <prefix>            - Global prefix (defaults.prefix below).
-# <formated-message>  - formatted version of the message (if provided).
+# <formatted-message>  - formatted version of the message (if provided).
 #
 # Supports MiniMessage formatting (colors, gradients, hover, click, etc.)
 # MiniMessage live editor: https://webui.advntr.dev/
@@ -46,6 +46,11 @@
 defaults:
   prefix: "<#FDD017><bold>ChatCore</bold></#FDD017> <#EB00FF>></#EB00FF>"
 
+chat:
+  per-world: true
+  errors:
+    no-perm: "<prefix> <#FF2200>You are not allowed to chat.</#FF2200>"
+
 reload:
   all:
     actions:
@@ -56,7 +61,7 @@ reload:
 
 shout:
   flag: "#"
-  format: "<#FDD017>Shout</#FDD017> <gray>|</gray> <formated-message>"
+  format: "<#FDD017>Shout</#FDD017> <gray>|</gray> <formatted-message>"
   sender:
     actions:
       - "SOUND:ENTITY_PLAYER_LEVELUP"
@@ -72,7 +77,7 @@ shout:
 
 chatspy:
   on-join: false
-  format: "<#EB00FF>Spy</#EB00FF> <#FDD017><worldname></#FDD017> <dark_gray>|</dark_gray> <formated-message>"
+  format: "<#EB00FF>Spy</#EB00FF> <#FDD017><worldname></#FDD017> <dark_gray>|</dark_gray> <formatted-message>"
   enable:
     actions:
       - "CHAT:<prefix> <#00FF29>ChatSpy enabled!</#00FF29>"
@@ -101,4 +106,28 @@ pv-messages:
   errors:
     no-msg: "<prefix> <#FF2200>you need to provide message.</#FF2200>"
     self-msg: "<prefix> <#FF2200>You cannot message yourself.</#FF2200>"
+    not-found: "<prefix> <#FF2200>Player not found.</#FF2200>"
+
+ignore:
+  add:
+    actions:
+      - "CHAT:<prefix> <#00FFE0><receiver-username> added to ignore list.</#00FFE0>"
+  remove:
+    actions:
+      - "CHAT:<prefix> <#00FFE0><receiver-username> removed from ignore list.</#00FFE0>"
+  all:
+    enable:
+      actions:
+        - "CHAT:<prefix> <#00FF29>Global ignore mode enabled.</#00FF29>"
+    disable:
+      actions:
+        - "CHAT:<prefix> <#FF2200>Global ignore mode disabled.</#FF2200>"
+  clear:
+    actions:
+      - "CHAT:<prefix> <#00FFE0>Ignore list cleared.</#00FFE0>"
+  list:
+    stored: "Ignored players list >"
+    empty: "No players are currently ignored."
+  errors:
+    self-ignore: "<prefix> <#FF2200>You cannot ignore yourself.</#FF2200>"
     not-found: "<prefix> <#FF2200>Player not found.</#FF2200>"

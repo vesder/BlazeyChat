@@ -83,10 +83,6 @@ public class MsgCommand implements SubCommand {
                     continue;
                 }
 
-                if (receiverUser.getIgnoredPlayers().contains(player.getUniqueId())) {
-                    spyPlayer.sendMessage(TextUtils.buildFormattedComponent("<prefix><displayname> is ignoring <receiver-displayname>", player, receiver, null, null));
-                }
-
                 for (String action : settingsConfig.getPvMessagesReceiverActions()) {
                     TextUtils.runActionDispatcher(action, spyPlayer, player, receiver, message, null);
                 }

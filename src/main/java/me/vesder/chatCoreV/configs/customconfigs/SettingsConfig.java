@@ -11,6 +11,11 @@ public class SettingsConfig extends CustomConfig {
     // Defaults
     @Getter
     private String defaultPrefix;
+    // Chat
+    @Getter
+    private boolean chatPerWorld;
+    @Getter
+    private String chatNoPermError;
     // Reload
     @Getter
     private List<String> reloadAllActions;
@@ -53,7 +58,26 @@ public class SettingsConfig extends CustomConfig {
     private String pvMessagesNotFoundError;
     @Getter
     private String pvMessagesNoMsgError;
-    //
+    // IGNORE
+    @Getter
+    private List<String> ignoreAddActions;
+    @Getter
+    private List<String> ignoreRemoveActions;
+    @Getter
+    private List<String> ignoreAllEnableActions;
+    @Getter
+    private List<String> ignoreAllDisableActions;
+    @Getter
+    private List<String> ignoreClearActions;
+    @Getter
+    private String ignoreListStored;
+    @Getter
+    private String ignoreListEmpty;
+    @Getter
+    private String ignoreSelfIgnoreError;
+    @Getter
+    private String ignoreNotFoundError;
+
 
     @Override
     public String getName() {
@@ -64,6 +88,9 @@ public class SettingsConfig extends CustomConfig {
     public void loadValues() {
         // Defaults Section
         defaultPrefix = ConfigUtils.getStringConfig(getName(), "defaults.prefix");
+        // Chat Section
+        chatPerWorld = ConfigUtils.getBooleanConfig(getName(), "chat.per-world");
+        chatNoPermError = ConfigUtils.getStringConfig(getName(), "chat.errors.no-perm");
         // Reload Section
         reloadAllActions = ConfigUtils.getStringListConfig(getName(), "reload.all.actions");
         reloadSpecificActions = ConfigUtils.getStringListConfig(getName(), "reload.specific.actions");
@@ -87,6 +114,16 @@ public class SettingsConfig extends CustomConfig {
         pvMessagesSelfMsgError = ConfigUtils.getStringConfig(getName(), "pv-messages.errors.self-msg");
         pvMessagesNotFoundError = ConfigUtils.getStringConfig(getName(), "pv-messages.errors.not-found");
         pvMessagesNoMsgError = ConfigUtils.getStringConfig(getName(), "pv-messages.errors.no-msg");
+        // Ignore Section
+        ignoreAddActions = ConfigUtils.getStringListConfig(getName(), "ignore.add.actions");
+        ignoreRemoveActions = ConfigUtils.getStringListConfig(getName(), "ignore.remove.actions");
+        ignoreAllEnableActions = ConfigUtils.getStringListConfig(getName(), "ignore.all.enable.actions");
+        ignoreAllDisableActions = ConfigUtils.getStringListConfig(getName(), "ignore.all.disable.actions");
+        ignoreClearActions = ConfigUtils.getStringListConfig(getName(), "ignore.clear.actions");
+        ignoreListStored = ConfigUtils.getStringConfig(getName(), "ignore.list.stored");
+        ignoreListEmpty = ConfigUtils.getStringConfig(getName(), "ignore.list.empty");
+        ignoreSelfIgnoreError = ConfigUtils.getStringConfig(getName(), "ignore.errors.self-ignore");
+        ignoreNotFoundError = ConfigUtils.getStringConfig(getName(), "ignore.errors.not-found");
 
     }
 }

@@ -38,6 +38,11 @@ commands:
       - r
     permission: chatcorev.command.reply
     permission-message: You do not have permission to use this command.
+  ignore:
+    description: Manage ignored players, toggle clear or ignore all
+    usage: /<command>
+    permission: chatcorev.command.ignore
+    permission-message: You do not have permission to use this command.
 
 permissions:
   chatcorev.chat:
@@ -66,4 +71,7 @@ permissions:
     default: true
   chatcorev.command.reply:
     description: Allows a player to reply to their last reply target.
+    default: true
+  chatcorev.command.ignore:
+    description: Allows managing ignored players.
     default: true

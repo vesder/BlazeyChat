@@ -16,6 +16,7 @@ public class User {
 
     private boolean shout;
     private boolean chatSpy;
+    private boolean ignoreAll;
     private String adsMusic;
     private Set<UUID> ignoredPlayers;
     private Set<UUID> blockedPlayers;
