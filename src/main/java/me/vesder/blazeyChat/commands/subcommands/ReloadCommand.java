@@ -3,7 +3,7 @@ package me.vesder.blazeyChat.commands.subcommands;
 import me.vesder.blazeyChat.commands.SubCommand;
 import me.vesder.blazeyChat.configs.ConfigManager;
 import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
-import me.vesder.blazeyChat.utils.TextUtils;
+import me.vesder.blazeyChat.utils.Utils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -27,12 +27,12 @@ public class ReloadCommand implements SubCommand {
 
     @Override
     public String getSyntax() {
-        return "/ccv reload [config]";
+        return "/bc reload [config]";
     }
 
     @Override
     public String getPermission() {
-        return "chatcorev.command.reload";
+        return "blazeychat.command.reload";
     }
 
     @Override
@@ -47,7 +47,7 @@ public class ReloadCommand implements SubCommand {
 
             ConfigManager.getConfigManager().load();
             for (String action : settingsConfig.getReloadAllActions()) {
-                TextUtils.runActionDispatcher(action, sender, sender instanceof Player ? (Player) sender : null, null, null, null);
+                Utils.runActionDispatcher(action, sender, sender instanceof Player ? (Player) sender : null, null, null, null);
             }
 
             return;
@@ -56,7 +56,7 @@ public class ReloadCommand implements SubCommand {
         if (ConfigManager.getConfigManager().getCustomConfigNames().contains(args[1])) {
             ConfigManager.getConfigManager().load(args[1]);
             for (String action : settingsConfig.getReloadSpecificActions()) {
-                TextUtils.runActionDispatcher(action, sender, sender instanceof Player ? (Player) sender : null, null, null, null);
+                Utils.runActionDispatcher(action, sender, sender instanceof Player ? (Player) sender : null, null, null, null);
             }
             return;
         }

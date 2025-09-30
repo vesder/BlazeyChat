@@ -11,7 +11,7 @@ import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
 import me.vesder.blazeyChat.data.User;
 import me.vesder.blazeyChat.data.UserManager;
 import me.vesder.blazeyChat.hooks.VaultHook;
-import me.vesder.blazeyChat.utils.TextUtils;
+import me.vesder.blazeyChat.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
@@ -30,7 +30,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import static me.vesder.blazeyChat.data.UserManager.getChatSpyPlayers;
-import static me.vesder.blazeyChat.utils.TextUtils.buildFormattedComponent;
+import static me.vesder.blazeyChat.utils.Utils.buildFormattedComponent;
 
 public class ChatListener implements Listener {
 
@@ -43,7 +43,7 @@ public class ChatListener implements Listener {
 
         Player player = event.getPlayer();
 
-        if (!TextUtils.checkPermission(player, "chatcorev.chat")) {
+        if (!Utils.checkPermission(player, "blazeychat.chat")) {
             player.sendMessage(buildFormattedComponent(settingsConfig.getChatNoPermError(), player, null, null, null));
             event.setCancelled(true);
             return;
@@ -60,7 +60,7 @@ public class ChatListener implements Listener {
         for (String blockWords : filterConfig.getBlockWords()) {
             if (originalMessageLowerCase.contains(blockWords.toLowerCase())) {
                 for (String action : filterConfig.getBlockActions()) {
-                    TextUtils.runActionDispatcher(action, player, player, null, originalMessage, null);
+                    Utils.runActionDispatcher(action, player, player, null, originalMessage, null);
                 }
                 event.setCancelled(true);
                 return;
@@ -71,7 +71,7 @@ public class ChatListener implements Listener {
 
             if (originalMessageLowerCase.contains(replaceWord.toLowerCase())) {
                 for (String action : filterConfig.getReplaceActions()) {
-                    TextUtils.runActionDispatcher(action, player, player, null, originalMessage, null);
+                    Utils.runActionDispatcher(action, player, player, null, originalMessage, null);
                 }
                 originalMessage = originalMessage.replaceAll("(?i)" + Pattern.quote(replaceWord), Objects.requireNonNull(filterConfig.getReplaceWordsSection().getString(replaceWord)));
             }
@@ -80,7 +80,7 @@ public class ChatListener implements Listener {
         for (String censorWord : filterConfig.getCensorWords()) {
             if (originalMessageLowerCase.contains(censorWord.toLowerCase())) {
                 for (String action : filterConfig.getCensorActions()) {
-                    TextUtils.runActionDispatcher(action, player, player, null, originalMessage, null);
+                    Utils.runActionDispatcher(action, player, player, null, originalMessage, null);
                 }
                 originalMessage = originalMessage.replaceAll("(?i)" + Pattern.quote(censorWord), String.valueOf(filterConfig.getCensorChar()).repeat(censorWord.length()));
             }
@@ -88,7 +88,7 @@ public class ChatListener implements Listener {
 
         boolean isMsgShout = user.isShout();
 
-        if (originalMessage.startsWith(settingsConfig.getShoutFlag()) && TextUtils.checkPermission(player, shoutCommand.getPermission())) {
+        if (originalMessage.startsWith(settingsConfig.getShoutFlag()) && Utils.checkPermission(player, shoutCommand.getPermission())) {
             originalMessage = originalMessage.substring(1).trim();
             isMsgShout = true;
         }

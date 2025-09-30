@@ -9,7 +9,7 @@ import java.util.List;
 import static me.vesder.blazeyChat.commands.CommandManager.getSubCommand;
 import static me.vesder.blazeyChat.commands.CommandManager.getSubCommandNames;
 import static me.vesder.blazeyChat.commands.CommandManager.getSubCommands;
-import static me.vesder.blazeyChat.utils.TextUtils.parseLegacyColorCodes;
+import static me.vesder.blazeyChat.utils.Utils.parseLegacyColorCodes;
 
 public class HelpCommand implements SubCommand {
 
@@ -25,12 +25,12 @@ public class HelpCommand implements SubCommand {
 
     @Override
     public String getSyntax() {
-        return "/ccv help [command]";
+        return "/bc help [command]";
     }
 
     @Override
     public String getPermission() {
-        return "chatcorev.command.help";
+        return "blazeychat.command.help";
     }
 
     @Override
@@ -62,7 +62,7 @@ public class HelpCommand implements SubCommand {
         return List.of();
     }
 
-    private static final String HEADER = "<gradient:#00FFE0:#EB00FF>==========</gradient> <#FDD017><bold>ChatCoreV</bold></#FDD017> <gradient:#EB00FF:#00FFE0>==========</gradient>\n \n";
+    private static final String HEADER = "<gradient:#00FFE0:#EB00FF>==========</gradient> <#FDD017><bold>BlazeyChat</bold></#FDD017> <gradient:#EB00FF:#00FFE0>==========</gradient>\n \n";
     private static final String FOOTER = "<gradient:#00FFE0:#EB00FF>==========</gradient><#EB00FF>============</#EB00FF><gradient:#EB00FF:#00FFE0>==========</gradient>";
 
     private String getDefaultHelpMessage(CommandSender sender) {

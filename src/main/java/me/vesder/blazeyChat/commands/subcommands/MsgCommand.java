@@ -5,7 +5,7 @@ import me.vesder.blazeyChat.configs.ConfigManager;
 import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
 import me.vesder.blazeyChat.data.User;
 import me.vesder.blazeyChat.data.UserManager;
-import me.vesder.blazeyChat.utils.TextUtils;
+import me.vesder.blazeyChat.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -31,12 +31,12 @@ public class MsgCommand implements SubCommand {
 
     @Override
     public String getSyntax() {
-        return "/ccv msg <player>";
+        return "/bc msg <player>";
     }
 
     @Override
     public String getPermission() {
-        return "chatcorev.command.msg";
+        return "blazeychat.command.msg";
     }
 
     @Override
@@ -47,17 +47,17 @@ public class MsgCommand implements SubCommand {
             Player receiver = Bukkit.getPlayer(args[1]);
 
             if (receiver == null) {
-                player.sendMessage(TextUtils.buildFormattedComponent(settingsConfig.getPvMessagesNotFoundError(), player, null, null, null));
+                player.sendMessage(Utils.buildFormattedComponent(settingsConfig.getPvMessagesNotFoundError(), player, null, null, null));
                 return;
             }
 
             if (player.equals(receiver)) {
-                player.sendMessage(TextUtils.buildFormattedComponent(settingsConfig.getPvMessagesSelfMsgError(), player, null, null, null));
+                player.sendMessage(Utils.buildFormattedComponent(settingsConfig.getPvMessagesSelfMsgError(), player, null, null, null));
                 return;
             }
 
             if (args.length == 2) {
-                player.sendMessage(TextUtils.buildFormattedComponent(settingsConfig.getPvMessagesNoMsgError(), player, null, null, null));
+                player.sendMessage(Utils.buildFormattedComponent(settingsConfig.getPvMessagesNoMsgError(), player, null, null, null));
                 return;
             }
 
@@ -65,14 +65,14 @@ public class MsgCommand implements SubCommand {
 
             User senderUser = UserManager.getUser(player.getUniqueId());
             for (String action : settingsConfig.getPvMessagesSenderActions()) {
-                TextUtils.runActionDispatcher(action, player, player, receiver, message, null);
+                Utils.runActionDispatcher(action, player, player, receiver, message, null);
             }
             senderUser.setLastMsgSender(receiver.getUniqueId());
 
             User receiverUser = UserManager.getUser(receiver.getUniqueId());
             if (receiverUser.getIgnoredPlayers() == null || !receiverUser.getIgnoredPlayers().contains(player.getUniqueId())) {
                 for (String action : settingsConfig.getPvMessagesReceiverActions()) {
-                    TextUtils.runActionDispatcher(action, receiver, player, receiver, message, null);
+                    Utils.runActionDispatcher(action, receiver, player, receiver, message, null);
                 }
                 receiverUser.setLastMsgSender(player.getUniqueId());
             }
@@ -84,7 +84,7 @@ public class MsgCommand implements SubCommand {
                 }
 
                 for (String action : settingsConfig.getPvMessagesReceiverActions()) {
-                    TextUtils.runActionDispatcher(action, spyPlayer, player, receiver, message, null);
+                    Utils.runActionDispatcher(action, spyPlayer, player, receiver, message, null);
                 }
             }
             return;

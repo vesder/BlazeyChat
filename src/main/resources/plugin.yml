@@ -1,7 +1,7 @@
 name: BlazeyChat
 version: '${version}'
 main: me.vesder.blazeyChat.BlazeyChat
-api-version: '1.20'
+api-version: '1.18'
 authors: [ vesder ]
 description: A lightweight and customizable chat plugin.
 softdepend:

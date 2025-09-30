@@ -5,7 +5,7 @@ import me.vesder.blazeyChat.configs.ConfigManager;
 import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
 import me.vesder.blazeyChat.data.User;
 import me.vesder.blazeyChat.data.UserManager;
-import me.vesder.blazeyChat.utils.TextUtils;
+import me.vesder.blazeyChat.utils.Utils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -27,12 +27,12 @@ public class ChatSpyCommand implements SubCommand {
 
     @Override
     public String getSyntax() {
-        return "/ccv chatspy";
+        return "/bc chatspy";
     }
 
     @Override
     public String getPermission() {
-        return "chatcorev.command.chatspy";
+        return "blazeychat.command.chatspy";
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ChatSpyCommand implements SubCommand {
         User user = UserManager.getUser(player.getUniqueId());
         user.setChatSpy(!user.isChatSpy());
         for (String action : user.isChatSpy() ? settingsConfig.getChatspyEnableActions() : settingsConfig.getChatspyDisableActions()) {
-            TextUtils.runActionDispatcher(action, player, player, null, null, null);
+            Utils.runActionDispatcher(action, player, player, null, null, null);
         }
 
     }

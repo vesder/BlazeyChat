@@ -26,12 +26,12 @@ public class AdsCommand implements SubCommand {
 
     @Override
     public String getSyntax() {
-        return "/ccv ads [settings]";
+        return "/bc ads [settings]";
     }
 
     @Override
     public String getPermission() {
-        return "chatcorev.command.ads";
+        return "blazeychat.command.ads";
     }
 
     @Override

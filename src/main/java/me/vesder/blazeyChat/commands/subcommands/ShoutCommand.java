@@ -5,7 +5,7 @@ import me.vesder.blazeyChat.configs.ConfigManager;
 import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
 import me.vesder.blazeyChat.data.User;
 import me.vesder.blazeyChat.data.UserManager;
-import me.vesder.blazeyChat.utils.TextUtils;
+import me.vesder.blazeyChat.utils.Utils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -27,12 +27,12 @@ public class ShoutCommand implements SubCommand {
 
     @Override
     public String getSyntax() {
-        return "/ccv shout [message/toggle] [world]";
+        return "/bc shout";
     }
 
     @Override
     public String getPermission() {
-        return "chatcorev.command.shout";
+        return "blazeychat.command.shout";
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ShoutCommand implements SubCommand {
         User user = UserManager.getUser(player.getUniqueId());
         user.setShout(!user.isShout());
         for (String action : user.isShout() ? settingsConfig.getShoutEnableActions() : settingsConfig.getShoutDisableActions()) {
-            TextUtils.runActionDispatcher(action, player, player, null, null, null);
+            Utils.runActionDispatcher(action, player, player, null, null, null);
         }
 
     }

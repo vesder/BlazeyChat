@@ -4,7 +4,7 @@ import me.vesder.blazeyChat.configs.ConfigManager;
 import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
 import me.vesder.blazeyChat.data.User;
 import me.vesder.blazeyChat.data.UserManager;
-import me.vesder.blazeyChat.utils.TextUtils;
+import me.vesder.blazeyChat.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,7 +20,7 @@ public class JoinListener implements Listener {
         Player player = event.getPlayer();
 
         if (settingsConfig.isChatspyOnJoin()) {
-            if (TextUtils.checkPermission(player, "chatcorev.command.chatspy")) {
+            if (Utils.checkPermission(player, "blazeychat.command.chatspy")) {
                 User user = UserManager.getUser(player.getUniqueId());
                 user.setChatSpy(true);
             }

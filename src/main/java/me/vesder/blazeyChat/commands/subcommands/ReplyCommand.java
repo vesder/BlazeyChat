@@ -6,7 +6,7 @@ import me.vesder.blazeyChat.configs.ConfigManager;
 import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
 import me.vesder.blazeyChat.data.User;
 import me.vesder.blazeyChat.data.UserManager;
-import me.vesder.blazeyChat.utils.TextUtils;
+import me.vesder.blazeyChat.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -31,12 +31,12 @@ public class ReplyCommand implements SubCommand {
 
     @Override
     public String getSyntax() {
-        return "/ccv reply <message>";
+        return "/bc reply <message>";
     }
 
     @Override
     public String getPermission() {
-        return "chatcorev.command.reply";
+        return "blazeychat.command.reply";
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ReplyCommand implements SubCommand {
         } else if (senderUUID != null && Bukkit.getPlayer(senderUUID) != null) {
             args[0] = Objects.requireNonNull(Bukkit.getPlayer(senderUUID)).getName();
         } else {
-            player.sendMessage(TextUtils.buildFormattedComponent(settingsConfig.getPvMessagesNotFoundError(), player, null, null, null));
+            player.sendMessage(Utils.buildFormattedComponent(settingsConfig.getPvMessagesNotFoundError(), player, null, null, null));
             return;
         }
 
@@ -78,7 +78,7 @@ public class ReplyCommand implements SubCommand {
             if (targetPlayer != null) {
 
                 for (String action : settingsConfig.getReplySetActions()) {
-                    TextUtils.runActionDispatcher(action, player, player, targetPlayer, null, null);
+                    Utils.runActionDispatcher(action, player, player, targetPlayer, null, null);
                 }
 
                 user.setReplyTarget(user.getLastMsgSender());
@@ -87,7 +87,7 @@ public class ReplyCommand implements SubCommand {
         }
 
         for (String action : settingsConfig.getReplyNotFoundActions()) {
-            TextUtils.runActionDispatcher(action, player, player, null, null, null);
+            Utils.runActionDispatcher(action, player, player, null, null, null);
         }
 
         return List.of();

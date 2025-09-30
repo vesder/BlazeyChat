@@ -71,7 +71,7 @@ public class ConfigManager {
                 customConfig.config.load(customConfig.file);
                 customConfig.loadValues();
             } catch (Exception ex) {
-                Bukkit.getLogger().log(Level.WARNING,
+                BlazeyChat.getPlugin().getLogger().log(Level.WARNING,
                     "Unexpected exception while loading config " + "( " + customConfig.getName() + " )", ex);
             }
 
@@ -96,7 +96,7 @@ public class ConfigManager {
             customConfig.config.load(customConfig.file);
             customConfig.loadValues();
         } catch (Exception ex) {
-            Bukkit.getLogger().log(Level.WARNING,
+            BlazeyChat.getPlugin().getLogger().log(Level.WARNING,
                 "Unexpected exception while loading config " + "( " + customConfig.getName() + " )", ex);
         }
 
@@ -108,7 +108,7 @@ public class ConfigManager {
             try {
                 customConfig.config.save(customConfig.file);
             } catch (Exception ex) {
-                Bukkit.getLogger().log(Level.WARNING,
+                BlazeyChat.getPlugin().getLogger().log(Level.WARNING,
                     "Unexpected exception while saving config " + "( " + customConfig.getName() + " )", ex);
             }
         }
@@ -122,7 +122,7 @@ public class ConfigManager {
         try {
             customConfig.config.save(customConfig.file);
         } catch (Exception ex) {
-            Bukkit.getLogger().log(Level.WARNING,
+            BlazeyChat.getPlugin().getLogger().log(Level.WARNING,
                 "Unexpected exception while saving config " + "( " + configName + " )", ex);
         }
 

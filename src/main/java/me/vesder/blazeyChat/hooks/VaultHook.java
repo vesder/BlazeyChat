@@ -1,6 +1,7 @@
 package me.vesder.blazeyChat.hooks;
 
 import lombok.Getter;
+import me.vesder.blazeyChat.BlazeyChat;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -62,7 +63,7 @@ public class VaultHook {
             setupChat();
             setupPermissions();
         } else {
-            Bukkit.getLogger().info("Vault not found! Some features may not work.");
+            BlazeyChat.getPlugin().getLogger().info("Vault not found! Some features may not work.");
         }
     }
 

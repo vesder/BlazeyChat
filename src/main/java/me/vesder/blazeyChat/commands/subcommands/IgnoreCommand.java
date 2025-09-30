@@ -5,7 +5,7 @@ import me.vesder.blazeyChat.configs.ConfigManager;
 import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
 import me.vesder.blazeyChat.data.User;
 import me.vesder.blazeyChat.data.UserManager;
-import me.vesder.blazeyChat.utils.TextUtils;
+import me.vesder.blazeyChat.utils.Utils;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -17,13 +17,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import static me.vesder.blazeyChat.utils.TextUtils.parseLegacyColorCodes;
+import static me.vesder.blazeyChat.utils.Utils.parseLegacyColorCodes;
 
 public class IgnoreCommand implements SubCommand {
 
     SettingsConfig settingsConfig = (SettingsConfig) ConfigManager.getConfigManager().getCustomConfig("settings.yml");
 
-    private static final String HEADER = "<gradient:#00FFE0:#EB00FF>==========</gradient> <#FDD017><bold>ChatCoreV</bold></#FDD017> <gradient:#EB00FF:#00FFE0>==========</gradient>\n \n";
+    private static final String HEADER = "<gradient:#00FFE0:#EB00FF>==========</gradient> <#FDD017><bold>BlazeyChat</bold></#FDD017> <gradient:#EB00FF:#00FFE0>==========</gradient>\n \n";
     private static final String FOOTER = "<gradient:#00FFE0:#EB00FF>==========</gradient><#EB00FF>============</#EB00FF><gradient:#EB00FF:#00FFE0>==========</gradient>";
 
     @Override
@@ -38,12 +38,12 @@ public class IgnoreCommand implements SubCommand {
 
     @Override
     public String getSyntax() {
-        return "/ccv ignore <player/#all/#clear>";
+        return "/bc ignore <player/#all/#clear>";
     }
 
     @Override
     public String getPermission() {
-        return "chatcorev.command.ignore";
+        return "blazeychat.command.ignore";
     }
 
     @Override
@@ -56,7 +56,7 @@ public class IgnoreCommand implements SubCommand {
             if (args[1].equalsIgnoreCase("#all")) {
                 user.setIgnoreAll(!user.isIgnoreAll());
                 for (String action : user.isIgnoreAll() ? settingsConfig.getIgnoreAllEnableActions() : settingsConfig.getIgnoreAllDisableActions()) {
-                    TextUtils.runActionDispatcher(action, player, player, null, null, null);
+                    Utils.runActionDispatcher(action, player, player, null, null, null);
                 }
                 if (args.length > 2 && args[2].equalsIgnoreCase("#refresh")) {
                     player.performCommand("ccv ignore");
@@ -70,7 +70,7 @@ public class IgnoreCommand implements SubCommand {
                 }
                 user.setIgnoreAll(false);
                 for (String action : settingsConfig.getIgnoreClearActions()) {
-                    TextUtils.runActionDispatcher(action, player, player, null, null, null);
+                    Utils.runActionDispatcher(action, player, player, null, null, null);
                 }
                 if (args.length > 2 && args[2].equalsIgnoreCase("#refresh")) {
                     player.performCommand("ccv ignore");
@@ -81,12 +81,12 @@ public class IgnoreCommand implements SubCommand {
             Player receiver = Bukkit.getPlayer(args[1]);
 
             if (receiver == null) {
-                player.sendMessage(TextUtils.buildFormattedComponent(settingsConfig.getIgnoreNotFoundError(), player, null, null, null));
+                player.sendMessage(Utils.buildFormattedComponent(settingsConfig.getIgnoreNotFoundError(), player, null, null, null));
                 return;
             }
 
             if (player.equals(receiver)) {
-                player.sendMessage(TextUtils.buildFormattedComponent(settingsConfig.getIgnoreSelfIgnoreError(), player, receiver, null, null));
+                player.sendMessage(Utils.buildFormattedComponent(settingsConfig.getIgnoreSelfIgnoreError(), player, receiver, null, null));
                 return;
             }
 
@@ -98,7 +98,7 @@ public class IgnoreCommand implements SubCommand {
                 user.setIgnoredPlayers(newIgnoredSet);
 
                 for (String action : settingsConfig.getIgnoreAddActions()) {
-                    TextUtils.runActionDispatcher(action, player, player, receiver, null, null);
+                    Utils.runActionDispatcher(action, player, player, receiver, null, null);
                 }
 
                 return;
@@ -109,14 +109,14 @@ public class IgnoreCommand implements SubCommand {
             if (ignoredPlayers.contains(receiver.getUniqueId())) {
                 ignoredPlayers.remove(receiver.getUniqueId());
                 for (String action : settingsConfig.getIgnoreRemoveActions()) {
-                    TextUtils.runActionDispatcher(action, player, player, receiver, null, null);
+                    Utils.runActionDispatcher(action, player, player, receiver, null, null);
                 }
                 return;
             }
 
             ignoredPlayers.add(receiver.getUniqueId());
             for (String action : settingsConfig.getIgnoreAddActions()) {
-                TextUtils.runActionDispatcher(action, player, player, receiver, null, null);
+                Utils.runActionDispatcher(action, player, player, receiver, null, null);
             }
 
             return;
