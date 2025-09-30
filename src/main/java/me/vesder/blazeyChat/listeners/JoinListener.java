@@ -1,0 +1,31 @@
+package me.vesder.blazeyChat.listeners;
+
+import me.vesder.blazeyChat.configs.ConfigManager;
+import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
+import me.vesder.blazeyChat.data.User;
+import me.vesder.blazeyChat.data.UserManager;
+import me.vesder.blazeyChat.utils.TextUtils;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+
+public class JoinListener implements Listener {
+
+    SettingsConfig settingsConfig = (SettingsConfig) ConfigManager.getConfigManager().getCustomConfig("settings.yml");
+
+    @EventHandler
+    private void onJoin(PlayerJoinEvent event) {
+
+        Player player = event.getPlayer();
+
+        if (settingsConfig.isChatspyOnJoin()) {
+            if (TextUtils.checkPermission(player, "chatcorev.command.chatspy")) {
+                User user = UserManager.getUser(player.getUniqueId());
+                user.setChatSpy(true);
+            }
+        }
+
+    }
+
+}

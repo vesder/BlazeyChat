@@ -1,17 +1,18 @@
-# ChatCoreV - Chat Filter Configuration (Not Complete)
+# BlazeyChat - Chat Filter Configuration (BETA)
 replace-mode:
   actions: []
   words:
-    "kos nnt": "kirm to kos nnm"
+    "fuck you": "you are unique"
+    "fuck this server": "this server is awesome"
 censor-mode:
   character: "*"
   actions:
     - "CHAT:<prefix> <#FF2200>Warning Please avoid bad language !</#FF2200>"
   words:
-    - "kir"
-    - "kos"
+    - "bitch"
+    - "slut"
 block-mode:
   actions:
     - "CHAT:<prefix> <#FF2200>Your message was blocked due to inappropriate language !</#FF2200>"
   words:
-    - "jende"
+    - "dick"

@@ -1,3 +1,10 @@
+################################################################################
+# BlazeyChat - Format Configuration
+#
+# Everything is optional. Remove or comment out sections you don't need.
+################################################################################
+
+# ------------------------------------------------------------------------------
 # Available placeholders (provided by the plugin itself):
 # <message> - The content of the chat message.
 # <username> - The sender's username.
@@ -15,6 +22,8 @@
 #
 # Priority: checks groups from bottom (highest priority) to top (lowest).
 # Example order: owner > admin > default
+# ------------------------------------------------------------------------------
+
 group-formats:
   default: "&7Member :&r <displayname> > <message>"
   admin: "&cAdmin :&r <displayname> > <message>"

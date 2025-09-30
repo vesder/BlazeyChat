@@ -1,5 +1,5 @@
 ################################################################################
-# ChatCoreV - Main Configuration
+# BlazeyChat - Main Configuration
 #
 # Everything is optional. Remove or comment out sections you don't need.
 # Actions are executed in order; leave a list empty ([]) to disable it.
@@ -44,7 +44,7 @@
 # ------------------------------------------------------------------------------
 
 defaults:
-  prefix: "<#FDD017><bold>ChatCore</bold></#FDD017> <#EB00FF>></#EB00FF>"
+  prefix: "<#FDD017><bold>BlazeyChat</bold></#FDD017> <#EB00FF>></#EB00FF>"
 
 chat:
   per-world: true
