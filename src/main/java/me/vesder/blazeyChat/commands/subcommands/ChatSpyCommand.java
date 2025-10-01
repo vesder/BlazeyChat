@@ -1,7 +1,6 @@
 package me.vesder.blazeyChat.commands.subcommands;
 
 import me.vesder.blazeyChat.commands.SubCommand;
-import me.vesder.blazeyChat.configs.ConfigManager;
 import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
 import me.vesder.blazeyChat.data.User;
 import me.vesder.blazeyChat.data.UserManager;
@@ -13,7 +12,11 @@ import java.util.List;
 
 public class ChatSpyCommand implements SubCommand {
 
-    SettingsConfig settingsConfig = (SettingsConfig) ConfigManager.getConfigManager().getCustomConfig("settings.yml");
+    private final SettingsConfig settingsConfig;
+
+    public ChatSpyCommand(SettingsConfig settingsConfig) {
+        this.settingsConfig = settingsConfig;
+    }
 
     @Override
     public String getName() {

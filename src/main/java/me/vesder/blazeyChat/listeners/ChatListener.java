@@ -34,9 +34,15 @@ import static me.vesder.blazeyChat.utils.Utils.buildFormattedComponent;
 
 public class ChatListener implements Listener {
 
-    FormatConfig formatConfig = (FormatConfig) ConfigManager.getConfigManager().getCustomConfig("format.yml");
-    SettingsConfig settingsConfig = (SettingsConfig) ConfigManager.getConfigManager().getCustomConfig("settings.yml");
-    FilterConfig filterConfig = (FilterConfig) ConfigManager.getConfigManager().getCustomConfig("filter.yml");
+    private final SettingsConfig settingsConfig;
+    private final FormatConfig formatConfig;
+    private final FilterConfig filterConfig;
+
+    public ChatListener(SettingsConfig settingsConfig, FormatConfig formatConfig, FilterConfig filterConfig) {
+        this.settingsConfig = settingsConfig;
+        this.formatConfig = formatConfig;
+        this.filterConfig = filterConfig;
+    }
 
     @EventHandler
     private void onChat(AsyncChatEvent event) {
@@ -49,9 +55,7 @@ public class ChatListener implements Listener {
             return;
         }
 
-        User user = UserManager.getUser(player.getUniqueId());
         String originalMessage = ((TextComponent) event.originalMessage()).content();
-        SubCommand shoutCommand = CommandManager.getSubCommand("shout");
 
         // Check ( Block / Replace / Censor ) Words
 
@@ -86,29 +90,39 @@ public class ChatListener implements Listener {
             }
         }
 
+        User user = UserManager.getUser(player.getUniqueId());
         boolean isMsgShout = user.isShout();
+        SubCommand shoutCommand = CommandManager.getSubCommand("shout");
 
         if (originalMessage.startsWith(settingsConfig.getShoutFlag()) && Utils.checkPermission(player, shoutCommand.getPermission())) {
             originalMessage = originalMessage.substring(1).trim();
             isMsgShout = true;
         }
 
-        setupViewers(event, isMsgShout, getChatSpyPlayers(),settingsConfig.isChatPerWorld() ? event.getPlayer().getWorld().getPlayers() : Collections.emptyList());
-
-        List<String> playerGroups = List.of(VaultHook.getPerms().getPlayerGroups(player));
-        List<String> formattedGroups = new ArrayList<>(formatConfig.getFormatSection().getKeys(false));
-        Collections.reverse(formattedGroups);
+        setupViewers(event, isMsgShout, getChatSpyPlayers(), settingsConfig.isChatPerWorld() ? event.getPlayer().getWorld().getPlayers() : Collections.emptyList());
 
         Component formatedMessage = null;
-        for (String formattedGroup : formattedGroups) {
+        if (VaultHook.hasPermissions()) {
 
-            if (!playerGroups.contains(formattedGroup)) {
-                continue;
+            List<String> playerGroups = List.of(VaultHook.getPerms().getPlayerGroups(player));
+            List<String> formattedGroups = new ArrayList<>(formatConfig.getFormatSection().getKeys(false));
+            Collections.reverse(formattedGroups);
+
+            for (String formattedGroup : formattedGroups) {
+
+                if (!playerGroups.contains(formattedGroup)) {
+                    continue;
+                }
+
+                formatedMessage = buildFormattedComponent(formatConfig.getFormatSection().getString(formattedGroup), player, null, originalMessage, null);
+                event.message(formatedMessage);
+                break;
             }
 
-            formatedMessage = buildFormattedComponent(formatConfig.getFormatSection().getString(formattedGroup), player, null, originalMessage, null);
+        } else if (formatConfig.getFormatSection().getString("default") != null) {
+
+            formatedMessage = buildFormattedComponent(formatConfig.getFormatSection().getString("default"), player, null, originalMessage, null);
             event.message(formatedMessage);
-            break;
         }
 
         Component finalFormatedMessage = formatedMessage;

@@ -1,6 +1,5 @@
 package me.vesder.blazeyChat.listeners;
 
-import me.vesder.blazeyChat.configs.ConfigManager;
 import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
 import me.vesder.blazeyChat.data.User;
 import me.vesder.blazeyChat.data.UserManager;
@@ -12,7 +11,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class JoinListener implements Listener {
 
-    SettingsConfig settingsConfig = (SettingsConfig) ConfigManager.getConfigManager().getCustomConfig("settings.yml");
+    private final SettingsConfig settingsConfig;
+
+    public JoinListener(SettingsConfig settingsConfig) {
+        this.settingsConfig = settingsConfig;
+    }
 
     @EventHandler
     private void onJoin(PlayerJoinEvent event) {

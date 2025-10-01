@@ -16,6 +16,8 @@ public class Utils {
 
     private static final SettingsConfig settingsConfig = (SettingsConfig) ConfigManager.getConfigManager().getCustomConfig("settings.yml");
 
+    private Utils() {}
+
     public static String parseLegacyColorCodes(String text) {
 
         text = text.replace("&0", "<black>");
@@ -118,7 +120,7 @@ public class Utils {
         }
     }
 
-    public static Boolean checkPermission(Player player, String permission) {
+    public static boolean checkPermission(Player player, String permission) {
 
         return player.hasPermission(permission) || VaultHook.hasPermissions() && VaultHook.getPerms().playerHas(player, permission);
     }

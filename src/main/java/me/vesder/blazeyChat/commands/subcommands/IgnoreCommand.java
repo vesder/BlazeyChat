@@ -1,7 +1,6 @@
 package me.vesder.blazeyChat.commands.subcommands;
 
 import me.vesder.blazeyChat.commands.SubCommand;
-import me.vesder.blazeyChat.configs.ConfigManager;
 import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
 import me.vesder.blazeyChat.data.User;
 import me.vesder.blazeyChat.data.UserManager;
@@ -21,7 +20,11 @@ import static me.vesder.blazeyChat.utils.Utils.parseLegacyColorCodes;
 
 public class IgnoreCommand implements SubCommand {
 
-    SettingsConfig settingsConfig = (SettingsConfig) ConfigManager.getConfigManager().getCustomConfig("settings.yml");
+    private final SettingsConfig settingsConfig;
+
+    public IgnoreCommand(SettingsConfig settingsConfig) {
+        this.settingsConfig = settingsConfig;
+    }
 
     private static final String HEADER = "<gradient:#00FFE0:#EB00FF>==========</gradient> <#FDD017><bold>BlazeyChat</bold></#FDD017> <gradient:#EB00FF:#00FFE0>==========</gradient>\n \n";
     private static final String FOOTER = "<gradient:#00FFE0:#EB00FF>==========</gradient><#EB00FF>============</#EB00FF><gradient:#EB00FF:#00FFE0>==========</gradient>";
@@ -38,7 +41,7 @@ public class IgnoreCommand implements SubCommand {
 
     @Override
     public String getSyntax() {
-        return "/bc ignore <player/#all/#clear>";
+        return "/bc ignore [player/#all/#clear]";
     }
 
     @Override
@@ -59,7 +62,7 @@ public class IgnoreCommand implements SubCommand {
                     Utils.runActionDispatcher(action, player, player, null, null, null);
                 }
                 if (args.length > 2 && args[2].equalsIgnoreCase("#refresh")) {
-                    player.performCommand("ccv ignore");
+                    player.performCommand("bc ignore");
                 }
                 return;
             }
@@ -73,7 +76,7 @@ public class IgnoreCommand implements SubCommand {
                     Utils.runActionDispatcher(action, player, player, null, null, null);
                 }
                 if (args.length > 2 && args[2].equalsIgnoreCase("#refresh")) {
-                    player.performCommand("ccv ignore");
+                    player.performCommand("bc ignore");
                 }
                 return;
             }

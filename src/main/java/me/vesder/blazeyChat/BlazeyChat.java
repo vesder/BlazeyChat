@@ -3,10 +3,12 @@ package me.vesder.blazeyChat;
 import lombok.Getter;
 import me.vesder.blazeyChat.commands.CommandManager;
 import me.vesder.blazeyChat.configs.ConfigManager;
+import me.vesder.blazeyChat.configs.customconfigs.FilterConfig;
+import me.vesder.blazeyChat.configs.customconfigs.FormatConfig;
+import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
 import me.vesder.blazeyChat.hooks.MetricsLite;
 import me.vesder.blazeyChat.listeners.ChatListener;
 import me.vesder.blazeyChat.listeners.JoinListener;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
@@ -18,24 +20,29 @@ public final class BlazeyChat extends JavaPlugin {
     @Getter
     private static BlazeyChat plugin;
 
+    // Configs
+    private final SettingsConfig settingsConfig = (SettingsConfig) ConfigManager.getConfigManager().getCustomConfig("settings.yml");
+    private final FormatConfig formatConfig = (FormatConfig) ConfigManager.getConfigManager().getCustomConfig("format.yml");
+    private final FilterConfig filterConfig = (FilterConfig) ConfigManager.getConfigManager().getCustomConfig("filter.yml");
+
     @Override
     public void onEnable() {
 
         // Register the plugin instance
         plugin = this;
 
-        getPluginManager().registerEvents(new ChatListener(), this);
-        getPluginManager().registerEvents(new JoinListener(), this);
-
-        Objects.requireNonNull(getCommand("blazeychat")).setExecutor(new CommandManager());
-        Objects.requireNonNull(getCommand("shout")).setExecutor(new CommandManager());
-        Objects.requireNonNull(getCommand("chatspy")).setExecutor(new CommandManager());
-        Objects.requireNonNull(getCommand("msg")).setExecutor(new CommandManager());
-        Objects.requireNonNull(getCommand("reply")).setExecutor(new CommandManager());
-        Objects.requireNonNull(getCommand("ignore")).setExecutor(new CommandManager());
-//        Objects.requireNonNull(getCommand("ads")).setExecutor(new CommandManager());
-
         ConfigManager.getConfigManager().load();
+
+        getPluginManager().registerEvents(new ChatListener(settingsConfig, formatConfig, filterConfig), this);
+        getPluginManager().registerEvents(new JoinListener(settingsConfig), this);
+
+        Objects.requireNonNull(getCommand("blazeychat")).setExecutor(new CommandManager(settingsConfig));
+        Objects.requireNonNull(getCommand("shout")).setExecutor(new CommandManager(settingsConfig));
+        Objects.requireNonNull(getCommand("chatspy")).setExecutor(new CommandManager(settingsConfig));
+        Objects.requireNonNull(getCommand("msg")).setExecutor(new CommandManager(settingsConfig));
+        Objects.requireNonNull(getCommand("reply")).setExecutor(new CommandManager(settingsConfig));
+        Objects.requireNonNull(getCommand("ignore")).setExecutor(new CommandManager(settingsConfig));
+//        Objects.requireNonNull(getCommand("ads")).setExecutor(new CommandManager());
 
         int pluginId = 27414;
         MetricsLite metricsLite = new MetricsLite(this, pluginId);

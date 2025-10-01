@@ -13,7 +13,11 @@ import static me.vesder.blazeyChat.commands.CommandManager.sendHelpMessage;
 
 public class ReloadCommand implements SubCommand {
 
-    SettingsConfig settingsConfig = (SettingsConfig) ConfigManager.getConfigManager().getCustomConfig("settings.yml");
+    private final SettingsConfig settingsConfig;
+
+    public ReloadCommand(SettingsConfig settingsConfig) {
+        this.settingsConfig = settingsConfig;
+    }
 
     @Override
     public String getName() {

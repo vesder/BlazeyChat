@@ -7,6 +7,7 @@ import me.vesder.blazeyChat.commands.subcommands.MsgCommand;
 import me.vesder.blazeyChat.commands.subcommands.ReloadCommand;
 import me.vesder.blazeyChat.commands.subcommands.ReplyCommand;
 import me.vesder.blazeyChat.commands.subcommands.ShoutCommand;
+import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -24,21 +25,20 @@ public class CommandManager implements TabExecutor {
 
     private static final Map<String, SubCommand> subCommandMap = new HashMap<>();
 
-    static {
+    public CommandManager(SettingsConfig settingsConfig) {
 
         registerSubCommands(
 
             new HelpCommand(),
-            new ReloadCommand(),
-            new ShoutCommand(),
-            new ChatSpyCommand(),
+            new ReloadCommand(settingsConfig),
+            new ShoutCommand(settingsConfig),
+            new ChatSpyCommand(settingsConfig),
 //            new AdsCommand(),
-            new MsgCommand(),
-            new ReplyCommand(),
-            new IgnoreCommand()
+            new MsgCommand(settingsConfig),
+            new ReplyCommand(settingsConfig),
+            new IgnoreCommand(settingsConfig)
 
         );
-
     }
 
     private static void registerSubCommands(SubCommand... subCommands) {
