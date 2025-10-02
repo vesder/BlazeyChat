@@ -1,5 +1,6 @@
 package me.vesder.blazeyChat.utils;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.vesder.blazeyChat.configs.ConfigManager;
 import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
 import me.vesder.blazeyChat.hooks.VaultHook;
@@ -8,6 +9,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.title.Title;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,6 +17,8 @@ import org.bukkit.entity.Player;
 public class Utils {
 
     private static final SettingsConfig settingsConfig = (SettingsConfig) ConfigManager.getConfigManager().getCustomConfig("settings.yml");
+
+    private static final boolean isPAPIEnabled = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
 
     private Utils() {}
 
@@ -47,11 +51,20 @@ public class Utils {
         return text;
     }
 
+    public static String parseWithPlaceholdersAPI(Player player, String text) {
+
+        return PlaceholderAPI.setPlaceholders(player, text);
+    }
+
     public static Component buildFormattedComponent(String text, Player player, Player receiver, String originalMessage, Component formattedMessage) {
 
         text = parseLegacyColorCodes(text);
 
-        boolean allowColor = checkPermission(player, "chatcorev.color");
+        if (isPAPIEnabled) {
+            text = parseWithPlaceholdersAPI(player, text);
+        }
+
+        boolean allowColor = checkPermission(player, "blazeychat.color");
 
         TagResolver resolver = TagResolver.resolver(
             Placeholder.component("message", originalMessage != null ? (allowColor ? MiniMessage.miniMessage().deserialize(parseLegacyColorCodes(originalMessage)) : Component.text(originalMessage)) : Component.empty()),

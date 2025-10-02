@@ -47,7 +47,7 @@ defaults:
   prefix: "<#FDD017><bold>BlazeyChat</bold></#FDD017> <#EB00FF>></#EB00FF>"
 
 chat:
-  per-world: true
+  per-world: false
   errors:
     no-perm: "<prefix> <#FF2200>You are not allowed to chat.</#FF2200>"
 
