@@ -7,6 +7,7 @@ import me.vesder.blazeyChat.configs.customconfigs.FilterConfig;
 import me.vesder.blazeyChat.configs.customconfigs.FormatConfig;
 import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
 import me.vesder.blazeyChat.hooks.MetricsLite;
+import me.vesder.blazeyChat.hooks.UpdateChecker;
 import me.vesder.blazeyChat.listeners.ChatListener;
 import me.vesder.blazeyChat.listeners.JoinListener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,9 +22,12 @@ public final class BlazeyChat extends JavaPlugin {
     private static BlazeyChat plugin;
 
     // Configs
-    private final SettingsConfig settingsConfig = (SettingsConfig) ConfigManager.getConfigManager().getCustomConfig("settings.yml");
-    private final FormatConfig formatConfig = (FormatConfig) ConfigManager.getConfigManager().getCustomConfig("format.yml");
-    private final FilterConfig filterConfig = (FilterConfig) ConfigManager.getConfigManager().getCustomConfig("filter.yml");
+    private final SettingsConfig settingsConfig =
+        (SettingsConfig) ConfigManager.getConfigManager().getCustomConfig("settings.yml");
+    private final FormatConfig formatConfig =
+        (FormatConfig) ConfigManager.getConfigManager().getCustomConfig("format.yml");
+    private final FilterConfig filterConfig =
+        (FilterConfig) ConfigManager.getConfigManager().getCustomConfig("filter.yml");
 
     @Override
     public void onEnable() {
@@ -31,22 +35,26 @@ public final class BlazeyChat extends JavaPlugin {
         // Register the plugin instance
         plugin = this;
 
+        // Load configs
         ConfigManager.getConfigManager().load();
 
+        // Register events listeners
         getPluginManager().registerEvents(new ChatListener(settingsConfig, formatConfig, filterConfig), this);
         getPluginManager().registerEvents(new JoinListener(settingsConfig), this);
 
+        // Register commands
         Objects.requireNonNull(getCommand("blazeychat")).setExecutor(new CommandManager(settingsConfig));
         Objects.requireNonNull(getCommand("shout")).setExecutor(new CommandManager(settingsConfig));
         Objects.requireNonNull(getCommand("chatspy")).setExecutor(new CommandManager(settingsConfig));
         Objects.requireNonNull(getCommand("msg")).setExecutor(new CommandManager(settingsConfig));
         Objects.requireNonNull(getCommand("reply")).setExecutor(new CommandManager(settingsConfig));
         Objects.requireNonNull(getCommand("ignore")).setExecutor(new CommandManager(settingsConfig));
-//        Objects.requireNonNull(getCommand("ads")).setExecutor(new CommandManager());
 
+        // Setup metrics with bStats
         int pluginId = 27414;
         MetricsLite metricsLite = new MetricsLite(this, pluginId);
 
+        // Log plugin info to console
         getLogger().info("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= ★");
         getLogger().info("      BlazeyChat  ");
         getLogger().info(""); // Blank line for readability
@@ -54,6 +62,15 @@ public final class BlazeyChat extends JavaPlugin {
         getLogger().info("      Made By @Vesder      ");
         getLogger().info("Contact Me In Discord For Support");
         getLogger().info("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= ★");
+
+        // Check for plugin updates
+        new UpdateChecker(this, 129211).getVersion(version -> {
+            if (!getDescription().getVersion().equals(version)) {
+                getLogger().warning(
+                    "A new version is available! (Current: " + getDescription().getVersion() + ", Latest: " + version + ")"
+                );
+            }
+        });
 
     }
 

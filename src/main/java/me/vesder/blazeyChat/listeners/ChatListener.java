@@ -4,7 +4,6 @@ import io.papermc.paper.chat.ChatRenderer;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import me.vesder.blazeyChat.commands.CommandManager;
 import me.vesder.blazeyChat.commands.SubCommand;
-import me.vesder.blazeyChat.configs.ConfigManager;
 import me.vesder.blazeyChat.configs.customconfigs.FilterConfig;
 import me.vesder.blazeyChat.configs.customconfigs.FormatConfig;
 import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
@@ -49,18 +48,23 @@ public class ChatListener implements Listener {
 
         Player player = event.getPlayer();
 
+        // Check permission for chat
         if (!Utils.checkPermission(player, "blazeychat.chat")) {
-            player.sendMessage(buildFormattedComponent(settingsConfig.getChatNoPermError(), player, null, null, null));
+            player.sendMessage(
+                buildFormattedComponent(
+                    settingsConfig.getChatNoPermError(), player, null, null, null
+                )
+            );
             event.setCancelled(true);
             return;
         }
 
         String originalMessage = ((TextComponent) event.originalMessage()).content();
-
-        // Check ( Block / Replace / Censor ) Words
-
         String originalMessageLowerCase = originalMessage.toLowerCase();
 
+        // -------------------------
+        // Filter: Block Words
+        // -------------------------
         for (String blockWords : filterConfig.getBlockWords()) {
             if (originalMessageLowerCase.contains(blockWords.toLowerCase())) {
                 for (String action : filterConfig.getBlockActions()) {
@@ -71,36 +75,63 @@ public class ChatListener implements Listener {
             }
         }
 
+        // -------------------------
+        // Filter: Replace Words
+        // -------------------------
         for (String replaceWord : filterConfig.getReplaceWordsSection().getKeys(false)) {
 
             if (originalMessageLowerCase.contains(replaceWord.toLowerCase())) {
                 for (String action : filterConfig.getReplaceActions()) {
                     Utils.runActionDispatcher(action, player, player, null, originalMessage, null);
                 }
-                originalMessage = originalMessage.replaceAll("(?i)" + Pattern.quote(replaceWord), Objects.requireNonNull(filterConfig.getReplaceWordsSection().getString(replaceWord)));
+                originalMessage =
+                    originalMessage.replaceAll("(?i)"
+                            + Pattern.quote(replaceWord),
+                        Objects.requireNonNull(filterConfig.getReplaceWordsSection().getString(replaceWord)));
             }
         }
 
+        // -------------------------
+        // Filter: Censor Words
+        // -------------------------
         for (String censorWord : filterConfig.getCensorWords()) {
             if (originalMessageLowerCase.contains(censorWord.toLowerCase())) {
                 for (String action : filterConfig.getCensorActions()) {
                     Utils.runActionDispatcher(action, player, player, null, originalMessage, null);
                 }
-                originalMessage = originalMessage.replaceAll("(?i)" + Pattern.quote(censorWord), String.valueOf(filterConfig.getCensorChar()).repeat(censorWord.length()));
+                originalMessage =
+                    originalMessage.replaceAll("(?i)"
+                            + Pattern.quote(censorWord),
+                        String.valueOf(filterConfig.getCensorChar()).repeat(censorWord.length()));
             }
         }
 
+        // -------------------------
+        // Shout Handling
+        // -------------------------
         User user = UserManager.getUser(player.getUniqueId());
         boolean isMsgShout = user.isShout();
         SubCommand shoutCommand = CommandManager.getSubCommand("shout");
 
-        if (originalMessage.startsWith(settingsConfig.getShoutFlag()) && Utils.checkPermission(player, shoutCommand.getPermission())) {
+        if (originalMessage.startsWith(settingsConfig.getShoutFlag())
+            && Utils.checkPermission(player, shoutCommand.getPermission())) {
             originalMessage = originalMessage.substring(1).trim();
             isMsgShout = true;
         }
 
-        setupViewers(event, isMsgShout, getChatSpyPlayers(), settingsConfig.isChatPerWorld() ? event.getPlayer().getWorld().getPlayers() : Collections.emptyList());
+        // -------------------------
+        // Setup viewers
+        // -------------------------
+        setupViewers(
+            event, isMsgShout, getChatSpyPlayers(),
+            settingsConfig.isChatPerWorld()
+                ? event.getPlayer().getWorld().getPlayers()
+                : Collections.emptyList()
+        );
 
+        // -------------------------
+        // Format message
+        // -------------------------
         Component formatedMessage = null;
         if (VaultHook.hasPermissions()) {
 
@@ -114,22 +145,32 @@ public class ChatListener implements Listener {
                     continue;
                 }
 
-                formatedMessage = buildFormattedComponent(formatConfig.getFormatSection().getString(formattedGroup), player, null, originalMessage, null);
+                formatedMessage =
+                    buildFormattedComponent(
+                        formatConfig.getFormatSection().getString(formattedGroup), player, null, originalMessage, null
+                    );
                 event.message(formatedMessage);
                 break;
             }
 
         } else if (formatConfig.getFormatSection().getString("default") != null) {
 
-            formatedMessage = buildFormattedComponent(formatConfig.getFormatSection().getString("default"), player, null, originalMessage, null);
+            formatedMessage =
+                buildFormattedComponent(
+                    formatConfig.getFormatSection().getString("default"), player, null, originalMessage, null
+                );
             event.message(formatedMessage);
         }
 
+        // -------------------------
+        // Event Renderer
+        // -------------------------
         Component finalFormatedMessage = formatedMessage;
         String finalOriginalMessage = originalMessage;
         boolean finalIsMsgShout = isMsgShout;
         event.renderer((source, sourceDisplayName, message, viewer) -> {
 
+            // If no formatted message, fallback to default
             if (finalFormatedMessage == null) {
 
                 Component defaultRender = ChatRenderer.defaultRenderer().render(source, sourceDisplayName, message, viewer);
@@ -139,11 +180,15 @@ public class ChatListener implements Listener {
                 }
 
                 if (finalIsMsgShout) {
-                    return buildFormattedComponent(settingsConfig.getShoutFormat(), source, null, finalOriginalMessage, defaultRender);
+                    return buildFormattedComponent(
+                        settingsConfig.getShoutFormat(), source, null, finalOriginalMessage, defaultRender
+                    );
                 }
 
                 if (getChatSpyPlayers().contains(viewer) && !viewer.equals(source)) {
-                    return buildFormattedComponent(settingsConfig.getChatspyFormat(), source, null, finalOriginalMessage, defaultRender);
+                    return buildFormattedComponent(
+                        settingsConfig.getChatspyFormat(), source, null, finalOriginalMessage, defaultRender
+                    );
                 }
 
                 return defaultRender;
@@ -154,11 +199,21 @@ public class ChatListener implements Listener {
             }
 
             if (finalIsMsgShout) {
-                return buildFormattedComponent(settingsConfig.getShoutFormat(), source, viewer instanceof Player ? (Player) viewer : null, finalOriginalMessage, finalFormatedMessage);
+                return buildFormattedComponent(
+                    settingsConfig.getShoutFormat(), source,
+                    viewer instanceof Player
+                        ? (Player) viewer
+                        : null, finalOriginalMessage, finalFormatedMessage
+                );
             }
 
             if (getChatSpyPlayers().contains(viewer) && !viewer.equals(source)) {
-                return buildFormattedComponent(settingsConfig.getChatspyFormat(), source, viewer instanceof Player ? (Player) viewer : null, finalOriginalMessage, finalFormatedMessage);
+                return buildFormattedComponent(
+                    settingsConfig.getChatspyFormat(), source,
+                    viewer instanceof Player
+                        ? (Player) viewer
+                        : null, finalOriginalMessage, finalFormatedMessage
+                );
             }
 
             return finalFormatedMessage;

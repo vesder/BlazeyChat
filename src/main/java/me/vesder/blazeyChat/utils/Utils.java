@@ -16,8 +16,9 @@ import org.bukkit.entity.Player;
 
 public class Utils {
 
-    private static final SettingsConfig settingsConfig = (SettingsConfig) ConfigManager.getConfigManager().getCustomConfig("settings.yml");
-
+    private static final MiniMessage miniMessage = MiniMessage.miniMessage();
+    private static final SettingsConfig settingsConfig =
+        (SettingsConfig) ConfigManager.getConfigManager().getCustomConfig("settings.yml");
     private static final boolean isPAPIEnabled = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
 
     private Utils() {}
@@ -56,7 +57,13 @@ public class Utils {
         return PlaceholderAPI.setPlaceholders(player, text);
     }
 
-    public static Component buildFormattedComponent(String text, Player player, Player receiver, String originalMessage, Component formattedMessage) {
+    public static Component buildFormattedComponent(
+        String text,
+        Player player,
+        Player receiver,
+        String originalMessage,
+        Component formattedMessage
+    ) {
 
         text = parseLegacyColorCodes(text);
 
@@ -67,30 +74,89 @@ public class Utils {
         boolean allowColor = checkPermission(player, "blazeychat.color");
 
         TagResolver resolver = TagResolver.resolver(
-            Placeholder.component("message", originalMessage != null ? (allowColor ? MiniMessage.miniMessage().deserialize(parseLegacyColorCodes(originalMessage)) : Component.text(originalMessage)) : Component.empty()),
-            Placeholder.component("formatted-message", formattedMessage != null ? formattedMessage : Component.empty()),
-            Placeholder.component("prefix", MiniMessage.miniMessage().deserialize(parseLegacyColorCodes(settingsConfig.getDefaultPrefix()))),
 
-            Placeholder.unparsed("username", player.getName()),
-            Placeholder.component("displayname", player.displayName()),
-            Placeholder.parsed("player-prefix", VaultHook.hasChat() ? VaultHook.getChat().getPlayerPrefix(player) : ""),
-            Placeholder.parsed("player-suffix", VaultHook.hasChat() ? VaultHook.getChat().getPlayerSuffix(player) : ""),
-            Placeholder.unparsed("group", VaultHook.hasPermissions() ? VaultHook.getPerms().getPrimaryGroup(player) : ""),
-            Placeholder.unparsed("worldname", player.getWorld().getName()),
+            // -------------------------
+            // message-related placeholders
+            // -------------------------
+            Placeholder.component(
+                "prefix",
+                miniMessage.deserialize(parseLegacyColorCodes(settingsConfig.getDefaultPrefix()))
+            ),
+            Placeholder.component(
+                "message", originalMessage != null
+                    ? (allowColor ? miniMessage.deserialize(parseLegacyColorCodes(originalMessage))
+                    : Component.text(originalMessage)) : Component.empty()
+            ),
+            Placeholder.component(
+                "formatted-message",
+                formattedMessage != null ? formattedMessage : Component.empty()),
 
-            Placeholder.unparsed("receiver-username", receiver != null ? receiver.getName() : ""),
-            Placeholder.component("receiver-displayname", receiver != null ? receiver.displayName() : Component.empty()),
-            Placeholder.parsed("receiver-prefix", receiver != null ? (VaultHook.hasChat() ? VaultHook.getChat().getPlayerPrefix(receiver) : "") : ""),
-            Placeholder.parsed("receiver-suffix", receiver != null ? (VaultHook.hasChat() ? VaultHook.getChat().getPlayerSuffix(receiver) : "") : ""),
-            Placeholder.unparsed("receiver-group", receiver != null ? (VaultHook.hasPermissions() ? VaultHook.getPerms().getPrimaryGroup(receiver) : "") : ""),
-            Placeholder.unparsed("receiver-worldname", receiver != null ? receiver.getWorld().getName() : "")
+            // -------------------------
+            // Player-related placeholders
+            // -------------------------
+            Placeholder.unparsed(
+                "username",
+                player.getName()
+            ),
+            Placeholder.component(
+                "displayname",
+                player.displayName()
+            ),
+            Placeholder.parsed(
+                "player-prefix",
+                VaultHook.hasChat() ? VaultHook.getChat().getPlayerPrefix(player) : ""
+            ),
+            Placeholder.parsed(
+                "player-suffix",
+                VaultHook.hasChat() ? VaultHook.getChat().getPlayerSuffix(player) : ""
+            ),
+            Placeholder.unparsed(
+                "group",
+                VaultHook.hasPermissions() ? VaultHook.getPerms().getPrimaryGroup(player) : ""
+            ),
+            Placeholder.unparsed(
+                "worldname",
+                player.getWorld().getName()
+            ),
+
+            // -------------------------
+            // Receiver-related placeholders
+            // -------------------------
+            Placeholder.unparsed(
+                "receiver-username", receiver != null ? receiver.getName() : ""
+            ),
+            Placeholder.component(
+                "receiver-displayname", receiver != null ? receiver.displayName() : Component.empty()
+            ),
+            Placeholder.parsed(
+                "receiver-prefix",
+                receiver != null ? (VaultHook.hasChat() ? VaultHook.getChat().getPlayerPrefix(receiver) : "") : ""
+            ),
+            Placeholder.parsed(
+                "receiver-suffix",
+                receiver != null ? (VaultHook.hasChat() ? VaultHook.getChat().getPlayerSuffix(receiver) : "") : ""
+            ),
+            Placeholder.unparsed(
+                "receiver-group",
+                receiver != null ? (VaultHook.hasPermissions() ? VaultHook.getPerms().getPrimaryGroup(receiver) : "") : ""
+            ),
+            Placeholder.unparsed(
+                "receiver-worldname",
+                receiver != null ? receiver.getWorld().getName() : ""
+            )
         );
 
-        return MiniMessage.miniMessage().deserialize(text, resolver);
-
+        return miniMessage.deserialize(text, resolver);
     }
 
-    public static void runActionDispatcher(String action, CommandSender target, Player player, Player receiver, String originalMessage, Component formattedMessage) {
+    public static void runActionDispatcher(
+        String action,
+        CommandSender target,
+        Player player,
+        Player receiver,
+        String originalMessage,
+        Component formattedMessage
+    ) {
 
         if (action.startsWith("CHAT:")) {
             action = action.substring(5).trim();
@@ -98,7 +164,7 @@ public class Utils {
             return;
         }
 
-        // PLAYER ONLY
+        // Actions other than chat require player target
         if (!(target instanceof Player targetPlayer)) {
             return;
         }
@@ -109,7 +175,7 @@ public class Utils {
             return;
         }
 
-        if (action.startsWith("TITLE:")) { // sub title support later
+        if (action.startsWith("TITLE:")) {
             action = action.substring(6).trim();
             targetPlayer.showTitle(
                 Title.title(
@@ -135,6 +201,7 @@ public class Utils {
 
     public static boolean checkPermission(Player player, String permission) {
 
-        return player.hasPermission(permission) || VaultHook.hasPermissions() && VaultHook.getPerms().playerHas(player, permission);
+        return player.hasPermission(permission)
+            || VaultHook.hasPermissions() && VaultHook.getPerms().playerHas(player, permission);
     }
 }

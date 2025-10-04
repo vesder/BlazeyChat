@@ -15,15 +15,15 @@ commands:
       - bc
     permission: blazeychat.command
     permission-message: You do not have permission to use this command.
-  chatspy:
-    description: Toggle chat spy mode to see other players messages.
-    usage: /<command>
-    permission: blazeychat.command.chatspy
-    permission-message: You do not have permission to use this command.
   shout:
     description: Send a message to all players.
     usage: /<command>
     permission: blazeychat.command.shout
+    permission-message: You do not have permission to use this command.
+  chatspy:
+    description: Toggle chat spy mode to see other players messages.
+    usage: /<command>
+    permission: blazeychat.command.chatspy
     permission-message: You do not have permission to use this command.
   msg:
     description: Sends a private message to another player

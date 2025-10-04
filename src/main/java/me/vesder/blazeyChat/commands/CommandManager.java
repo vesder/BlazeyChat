@@ -33,72 +33,11 @@ public class CommandManager implements TabExecutor {
             new ReloadCommand(settingsConfig),
             new ShoutCommand(settingsConfig),
             new ChatSpyCommand(settingsConfig),
-//            new AdsCommand(),
             new MsgCommand(settingsConfig),
             new ReplyCommand(settingsConfig),
             new IgnoreCommand(settingsConfig)
 
         );
-    }
-
-    private static void registerSubCommands(SubCommand... subCommands) {
-
-        for (SubCommand subCommand : subCommands) {
-            subCommandMap.put(subCommand.getName().toLowerCase(), subCommand);
-        }
-
-    }
-
-    public static SubCommand getSubCommand(String name) {
-        return subCommandMap.get(name.toLowerCase());
-    }
-
-    public static Collection<SubCommand> getSubCommands() {
-        return subCommandMap.values();
-    }
-
-    // make better HelpMessage system later
-    public static void sendHelpMessage(CommandSender sender, String name) {
-        getSubCommand("help").perform(sender, new String[]{"help", name});
-    }
-
-    /**
-     * Returns a list of all subcommand names, excluding any names provided.
-     */
-    public static List<String> getSubCommandNames(CommandSender sender, String... excludedNames) {
-
-        List<String> filteredNames = new ArrayList<>(subCommandMap.keySet());
-
-        for (String excludedName : excludedNames) {
-            filteredNames.remove(excludedName.toLowerCase());
-        }
-
-        filteredNames.removeIf(filteredName -> {
-            SubCommand subCommand = getSubCommand(filteredName);
-            return !sender.hasPermission(subCommand.getPermission());
-        });
-
-        return filteredNames;
-    }
-
-    public static List<String> getSubCommandNames(String... excludedNames) {
-
-        List<String> filteredNames = new ArrayList<>(subCommandMap.keySet());
-
-        for (String excludedName : excludedNames) {
-            filteredNames.remove(excludedName.toLowerCase());
-        }
-
-        return filteredNames;
-    }
-
-    private String[] prependArg(String first, String[] args) {
-
-        String[] newArgs = new String[args.length + 1];
-        newArgs[0] = first.toLowerCase();
-        System.arraycopy(args, 0, newArgs, 1, args.length);
-
-        return newArgs;
     }
 
     @Override
@@ -179,4 +118,54 @@ public class CommandManager implements TabExecutor {
         return List.of();
     }
 
+    // -------------------------
+    // public helper methods
+    // -------------------------
+    public static Collection<SubCommand> getSubCommands() {
+        return subCommandMap.values();
+    }
+
+    public static SubCommand getSubCommand(String name) {
+        return subCommandMap.get(name.toLowerCase());
+    }
+
+    public static List<String> getSubCommandNames(CommandSender sender, String... excludedNames) {
+
+        List<String> filteredNames = new ArrayList<>(subCommandMap.keySet());
+
+        for (String excludedName : excludedNames) {
+            filteredNames.remove(excludedName.toLowerCase());
+        }
+
+        filteredNames.removeIf(filteredName -> {
+            SubCommand subCommand = getSubCommand(filteredName);
+            return !sender.hasPermission(subCommand.getPermission());
+        });
+
+        return filteredNames;
+    }
+
+    public static void sendHelpMessage(CommandSender sender, String name) {
+        getSubCommand("help").perform(sender, new String[]{"help", name});
+    }
+
+    // -------------------------
+    // private helper methods
+    // -------------------------
+    private String[] prependArg(String first, String[] args) {
+
+        String[] newArgs = new String[args.length + 1];
+        newArgs[0] = first.toLowerCase();
+        System.arraycopy(args, 0, newArgs, 1, args.length);
+
+        return newArgs;
+    }
+
+    private static void registerSubCommands(SubCommand... subCommands) {
+
+        for (SubCommand subCommand : subCommands) {
+            subCommandMap.put(subCommand.getName().toLowerCase(), subCommand);
+        }
+
+    }
 }
