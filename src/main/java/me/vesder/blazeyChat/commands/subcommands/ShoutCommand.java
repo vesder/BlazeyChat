@@ -2,8 +2,8 @@ package me.vesder.blazeyChat.commands.subcommands;
 
 import me.vesder.blazeyChat.commands.SubCommand;
 import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
-import me.vesder.blazeyChat.data.User;
-import me.vesder.blazeyChat.data.UserManager;
+import me.vesder.blazeyChat.database.User;
+import me.vesder.blazeyChat.database.UserManager;
 import me.vesder.blazeyChat.utils.Utils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

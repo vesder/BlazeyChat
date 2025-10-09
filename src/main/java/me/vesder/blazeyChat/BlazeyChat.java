@@ -6,13 +6,20 @@ import me.vesder.blazeyChat.configs.ConfigManager;
 import me.vesder.blazeyChat.configs.customconfigs.FilterConfig;
 import me.vesder.blazeyChat.configs.customconfigs.FormatConfig;
 import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
+import me.vesder.blazeyChat.database.User;
+import me.vesder.blazeyChat.database.UserDatabase;
+import me.vesder.blazeyChat.database.UserManager;
 import me.vesder.blazeyChat.hooks.MetricsLite;
 import me.vesder.blazeyChat.hooks.UpdateChecker;
 import me.vesder.blazeyChat.listeners.ChatListener;
 import me.vesder.blazeyChat.listeners.JoinListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.SQLException;
+import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
+import java.util.logging.Level;
 
 import static org.bukkit.Bukkit.getPluginManager;
 
@@ -74,4 +81,22 @@ public final class BlazeyChat extends JavaPlugin {
 
     }
 
+    @Override
+    public void onDisable() {
+
+        for (Map.Entry<UUID, User> entry : UserManager.userMap.entrySet()) {
+            try {
+                UserDatabase.getInstance().saveUserData(entry.getValue(), entry.getKey());
+            } catch (SQLException ex) {
+                getLogger().log(Level.WARNING, "Failed to store player data in the database!", ex);
+            }
+        }
+
+        try {
+            UserDatabase.getInstance().closeConnection();
+        } catch (SQLException ex) {
+            getLogger().log(Level.WARNING, "Failed to close database connection!", ex);
+        }
+
+    }
 }

@@ -1,4 +1,4 @@
-package me.vesder.blazeyChat.data;
+package me.vesder.blazeyChat.database;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,12 +14,19 @@ import java.util.UUID;
 @NoArgsConstructor
 public class User {
 
+    // Player info
+    private String username;
+
+    // Boolean flags
     private boolean shout;
     private boolean chatSpy;
     private boolean ignoreAll;
-    private String adsMusic;
+
+    // Collections
     private Set<UUID> ignoredPlayers;
     private Set<UUID> blockedPlayers;
+
+    // References
     private UUID lastMsgSender;
     private UUID replyTarget;
 

@@ -7,8 +7,8 @@ import me.vesder.blazeyChat.commands.SubCommand;
 import me.vesder.blazeyChat.configs.customconfigs.FilterConfig;
 import me.vesder.blazeyChat.configs.customconfigs.FormatConfig;
 import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
-import me.vesder.blazeyChat.data.User;
-import me.vesder.blazeyChat.data.UserManager;
+import me.vesder.blazeyChat.database.User;
+import me.vesder.blazeyChat.database.UserManager;
 import me.vesder.blazeyChat.hooks.VaultHook;
 import me.vesder.blazeyChat.utils.Utils;
 import net.kyori.adventure.text.Component;
@@ -28,7 +28,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import static me.vesder.blazeyChat.data.UserManager.getChatSpyPlayers;
+import static me.vesder.blazeyChat.database.UserManager.getChatSpyPlayers;
 import static me.vesder.blazeyChat.utils.Utils.buildFormattedComponent;
 
 public class ChatListener implements Listener {

@@ -1,13 +1,17 @@
-package me.vesder.blazeyChat.data;
+package me.vesder.blazeyChat.database;
 
+import me.vesder.blazeyChat.BlazeyChat;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class UserManager {
 
@@ -19,9 +23,21 @@ public class UserManager {
             return userMap.get(uuid);
         }
 
-        userMap.put(uuid, new User());
-        return userMap.get(uuid);
+        // check if player is already have data in database
+        try {
+            UserDatabase userDatabase = UserDatabase.getInstance();
+            if (userDatabase.userExists(uuid)) {
+                userMap.put(uuid, userDatabase.getUserData(uuid));
+                userMap.get(uuid).setUsername(Objects.requireNonNull(Bukkit.getPlayer(uuid)).getName());
+                return userMap.get(uuid);
+            }
+        } catch (SQLException ex) {
+            BlazeyChat.getPlugin().getLogger().log(Level.WARNING, "Failed to connect to database!", ex);
+        }
 
+        userMap.put(uuid, new User());
+        userMap.get(uuid).setUsername(Objects.requireNonNull(Bukkit.getPlayer(uuid)).getName());
+        return userMap.get(uuid);
     }
 
     public static Set<Player> getChatSpyPlayers() {

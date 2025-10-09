@@ -1,8 +1,8 @@
 package me.vesder.blazeyChat.listeners;
 
 import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
-import me.vesder.blazeyChat.data.User;
-import me.vesder.blazeyChat.data.UserManager;
+import me.vesder.blazeyChat.database.User;
+import me.vesder.blazeyChat.database.UserManager;
 import me.vesder.blazeyChat.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
