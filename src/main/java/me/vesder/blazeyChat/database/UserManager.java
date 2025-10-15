@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -24,11 +23,14 @@ public class UserManager {
             return userCache.get(uuid);
         }
 
+        Player player = Bukkit.getPlayer(uuid);
         // check if player is already have data in database
         try {
             if (userDatabase.userExists(uuid)) {
                 userCache.put(uuid, userDatabase.getUserData(uuid));
-                userCache.get(uuid).setUsername(Objects.requireNonNull(Bukkit.getPlayer(uuid)).getName());
+                if (player != null) {
+                    userCache.get(uuid).setUsername(player.getName());
+                }
                 return userCache.get(uuid);
             }
         } catch (SQLException ex) {
@@ -36,7 +38,9 @@ public class UserManager {
         }
 
         userCache.put(uuid, new User());
-        userCache.get(uuid).setUsername(Objects.requireNonNull(Bukkit.getPlayer(uuid)).getName());
+        if (player != null) {
+            userCache.get(uuid).setUsername(player.getName());
+        }
         return userCache.get(uuid);
     }
 
