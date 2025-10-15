@@ -4,6 +4,7 @@ main: me.vesder.blazeyChat.BlazeyChat
 api-version: '1.18'
 authors: [ vesder ]
 description: A lightweight and customizable chat plugin.
+website: https://discord.gg/Kew8x2x2XH
 softdepend:
   - Vault
   - PlaceholderAPI

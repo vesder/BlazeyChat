@@ -13,6 +13,7 @@ import me.vesder.blazeyChat.hooks.MetricsLite;
 import me.vesder.blazeyChat.hooks.UpdateChecker;
 import me.vesder.blazeyChat.listeners.ChatListener;
 import me.vesder.blazeyChat.listeners.JoinListener;
+import me.vesder.blazeyChat.listeners.QuitListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
@@ -48,6 +49,7 @@ public final class BlazeyChat extends JavaPlugin {
         // Register events listeners
         getPluginManager().registerEvents(new ChatListener(settingsConfig, formatConfig, filterConfig), this);
         getPluginManager().registerEvents(new JoinListener(settingsConfig), this);
+        getPluginManager().registerEvents(new QuitListener(), this);
 
         // Register commands
         Objects.requireNonNull(getCommand("blazeychat")).setExecutor(new CommandManager(settingsConfig));
@@ -84,9 +86,9 @@ public final class BlazeyChat extends JavaPlugin {
     @Override
     public void onDisable() {
 
-        for (Map.Entry<UUID, User> entry : UserManager.userMap.entrySet()) {
+        for (Map.Entry<UUID, User> entry : UserManager.userCache.entrySet()) {
             try {
-                UserDatabase.getInstance().saveUserData(entry.getValue(), entry.getKey());
+                UserDatabase.getInstance().saveUserData(entry.getKey(), entry.getValue());
             } catch (SQLException ex) {
                 getLogger().log(Level.WARNING, "Failed to store player data in the database!", ex);
             }

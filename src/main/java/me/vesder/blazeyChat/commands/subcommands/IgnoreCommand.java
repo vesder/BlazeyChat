@@ -5,7 +5,6 @@ import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
 import me.vesder.blazeyChat.database.User;
 import me.vesder.blazeyChat.database.UserManager;
 import me.vesder.blazeyChat.utils.Utils;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -52,7 +51,7 @@ public class IgnoreCommand implements SubCommand {
     @Override
     public void perform(Player player, String[] args) {
 
-        User user = UserManager.getUser(player.getUniqueId());
+        User user = UserManager.loadUser(player.getUniqueId());
 
         if (args.length >= 2) {
 
@@ -133,10 +132,10 @@ public class IgnoreCommand implements SubCommand {
             ignoreListBuilder.append(settingsConfig.getIgnoreListStored());
             ignoreListBuilder.append("\n");
             for (UUID ignoredPlayerUUID : user.getIgnoredPlayers()) {
-                Player ignoredPlayer = Bukkit.getPlayer(ignoredPlayerUUID);
-                if (ignoredPlayer != null) {
+                User ignoredPlayerUser = UserManager.loadUser(ignoredPlayerUUID);
+                if (ignoredPlayerUser != null) {
                     ignoreListBuilder.append("\n");
-                    ignoreListBuilder.append(((TextComponent) ignoredPlayer.displayName()).content());
+                    ignoreListBuilder.append(ignoredPlayerUser.getUsername());
                 }
 
             }

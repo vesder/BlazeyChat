@@ -77,7 +77,19 @@ public class SettingsConfig extends CustomConfig {
     private String ignoreSelfIgnoreError;
     @Getter
     private String ignoreNotFoundError;
-
+    // Database
+    @Getter
+    private String databaseMethod;
+    @Getter
+    private String databaseAddress;
+    @Getter
+    private String databaseName;
+    @Getter
+    private String databaseUsername;
+    @Getter
+    private String databasePassword;
+    @Getter
+    private boolean databaseSSL;
 
     @Override
     public String getName() {
@@ -124,6 +136,13 @@ public class SettingsConfig extends CustomConfig {
         ignoreListEmpty = ConfigUtils.getStringConfig(getName(), "ignore.list.empty");
         ignoreSelfIgnoreError = ConfigUtils.getStringConfig(getName(), "ignore.errors.self-ignore");
         ignoreNotFoundError = ConfigUtils.getStringConfig(getName(), "ignore.errors.not-found");
+        // Database Section
+        databaseMethod = ConfigUtils.getStringConfig(getName(), "database.storage-method");
+        databaseAddress = ConfigUtils.getStringConfig(getName(), "database.address");
+        databaseName = ConfigUtils.getStringConfig(getName(), "database.name");
+        databaseUsername = ConfigUtils.getStringConfig(getName(), "database.username");
+        databasePassword = ConfigUtils.getStringConfig(getName(), "database.password");
+        databaseSSL = ConfigUtils.getBooleanConfig(getName(), "database.useSSL");
 
     }
 }

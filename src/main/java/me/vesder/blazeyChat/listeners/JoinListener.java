@@ -21,10 +21,10 @@ public class JoinListener implements Listener {
     private void onJoin(PlayerJoinEvent event) {
 
         Player player = event.getPlayer();
+        User user = UserManager.loadUser(player.getUniqueId());
 
         if (settingsConfig.isChatspyOnJoin()) {
             if (Utils.checkPermission(player, "blazeychat.command.chatspy")) {
-                User user = UserManager.getUser(player.getUniqueId());
                 user.setChatSpy(true);
             }
         }

@@ -4,7 +4,6 @@ import me.vesder.blazeyChat.BlazeyChat;
 import me.vesder.blazeyChat.configs.customconfigs.FilterConfig;
 import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
 import me.vesder.blazeyChat.configs.customconfigs.FormatConfig;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;

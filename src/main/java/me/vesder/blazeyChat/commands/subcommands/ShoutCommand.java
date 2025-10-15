@@ -41,7 +41,7 @@ public class ShoutCommand implements SubCommand {
     @Override
     public void perform(Player player, String[] args) {
 
-        User user = UserManager.getUser(player.getUniqueId());
+        User user = UserManager.loadUser(player.getUniqueId());
         user.setShout(!user.isShout());
         for (String action : user.isShout() ? settingsConfig.getShoutEnableActions() : settingsConfig.getShoutDisableActions()) {
             Utils.runActionDispatcher(action, player, player, null, null, null);

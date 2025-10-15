@@ -109,7 +109,7 @@ public class ChatListener implements Listener {
         // -------------------------
         // Shout Handling
         // -------------------------
-        User user = UserManager.getUser(player.getUniqueId());
+        User user = UserManager.loadUser(player.getUniqueId());
         boolean isMsgShout = user.isShout();
         SubCommand shoutCommand = CommandManager.getSubCommand("shout");
 
@@ -237,7 +237,7 @@ public class ChatListener implements Listener {
         event.viewers().removeIf(audience -> {
 
             if (audience instanceof Player viewerPlayer) {
-                User viewerUser = UserManager.getUser(viewerPlayer.getUniqueId());
+                User viewerUser = UserManager.loadUser(viewerPlayer.getUniqueId());
                 Set<UUID> ignoredPlayers = viewerUser.getIgnoredPlayers();
                 return viewerUser.isIgnoreAll() || (ignoredPlayers != null && ignoredPlayers.contains(senderUUID));
             }

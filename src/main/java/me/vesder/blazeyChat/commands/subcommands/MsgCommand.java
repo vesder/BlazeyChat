@@ -66,13 +66,13 @@ public class MsgCommand implements SubCommand {
 
             String message = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
 
-            User senderUser = UserManager.getUser(player.getUniqueId());
+            User senderUser = UserManager.loadUser(player.getUniqueId());
             for (String action : settingsConfig.getPvMessagesSenderActions()) {
                 Utils.runActionDispatcher(action, player, player, receiver, message, null);
             }
             senderUser.setLastMsgSender(receiver.getUniqueId());
 
-            User receiverUser = UserManager.getUser(receiver.getUniqueId());
+            User receiverUser = UserManager.loadUser(receiver.getUniqueId());
             if (receiverUser.getIgnoredPlayers() == null || !receiverUser.getIgnoredPlayers().contains(player.getUniqueId())) {
                 for (String action : settingsConfig.getPvMessagesReceiverActions()) {
                     Utils.runActionDispatcher(action, receiver, player, receiver, message, null);

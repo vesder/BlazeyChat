@@ -131,3 +131,49 @@ ignore:
   errors:
     self-ignore: "<prefix> <#FF2200>You cannot ignore yourself.</#FF2200>"
     not-found: "<prefix> <#FF2200>Player not found.</#FF2200>"
+
+################################################################################
+# BlazeyChat - Database Configuration
+#
+# Defines how BlazeyChat stores player data, settings, and chat information.
+# Supports both remote SQL servers and local file-based SQL databases.
+#
+# Remote databases require proper connection info (host, user, password).
+# Local ones (SQLite / H2) will automatically create database files.
+################################################################################
+
+# ------------------------------------------------------------------------------
+# Available SQL Storage Types:
+#
+#   Remote (require connection):
+#     - mysql
+#     - mariadb   (recommended over mysql)
+#     - postgresql
+#
+#   Local (no setup required):
+#     - h2        (default)
+#     - sqlite
+#
+# Example:
+#   storage-method: "sqlite"
+# ------------------------------------------------------------------------------
+
+database:
+  name: "blazeychat"
+  storage-method: "sqlite"
+
+# ------------------------------------------------------------------------------
+# Remote Database Connection
+#
+# Only required if you’re using:
+#   mysql, mariadb, or postgresql
+#
+# Default ports:
+#   - MySQL / MariaDB → 3306
+#   - PostgreSQL      → 5432
+# ------------------------------------------------------------------------------
+
+  address: "localhost:3306"       # Host and port
+  username: "root"                # Login username
+  password: ""                    # Login password
+  useSSL: false                   # Enable if your SQL server supports SSL

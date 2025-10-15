@@ -45,7 +45,7 @@ public class ReplyCommand implements SubCommand {
     @Override
     public void perform(Player player, String[] args) {
 
-        User user = UserManager.getUser(player.getUniqueId());
+        User user = UserManager.loadUser(player.getUniqueId());
         UUID targetUUID = user.getReplyTarget();
         UUID senderUUID = user.getLastMsgSender();
 
@@ -72,7 +72,7 @@ public class ReplyCommand implements SubCommand {
             return List.of();
         }
 
-        User user = UserManager.getUser(player.getUniqueId());
+        User user = UserManager.loadUser(player.getUniqueId());
 
         if (user.getLastMsgSender() != null) {
 

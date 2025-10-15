@@ -2,7 +2,11 @@ package me.vesder.blazeyChat.database;
 
 import lombok.Getter;
 import me.vesder.blazeyChat.BlazeyChat;
+import me.vesder.blazeyChat.configs.ConfigManager;
+import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
+import org.h2.Driver;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -18,6 +22,8 @@ public class UserDatabase {
 
     @Getter
     private static final UserDatabase instance;
+    private static final SettingsConfig settingsConfig =
+        (SettingsConfig) ConfigManager.getConfigManager().getCustomConfig("settings.yml");
     private final Connection connection;
 
     static {
@@ -29,8 +35,35 @@ public class UserDatabase {
     }
 
     private UserDatabase() throws SQLException {
-        String databaseName = "/user.db";
-        connection = DriverManager.getConnection("jdbc:sqlite:" + BlazeyChat.getPlugin().getDataFolder().getAbsolutePath() + databaseName);
+
+        String url;
+        String storageMethod = settingsConfig.getDatabaseMethod().toLowerCase();
+
+        switch (storageMethod) {
+            case "mysql", "mariadb"
+                -> url = "jdbc:mysql://"
+                + settingsConfig.getDatabaseAddress()
+                + "/" + settingsConfig.getDatabaseName()
+                + "?useSSL=" + settingsConfig.isDatabaseSSL() + "&autoReconnect=true";
+            case "postgresql" ->
+                url = "jdbc:postgresql://" + settingsConfig.getDatabaseAddress() + "/" + settingsConfig.getDatabaseName();
+            case "h2" -> {
+                new Driver();
+                File h2File = new File(BlazeyChat.getPlugin().getDataFolder(), settingsConfig.getDatabaseName());
+                url = "jdbc:h2:" + h2File.getAbsolutePath();
+            }
+            default -> {
+                File sqliteFile = new File(BlazeyChat.getPlugin().getDataFolder(), settingsConfig.getDatabaseName() + ".db");
+                url = "jdbc:sqlite:" + sqliteFile.getAbsolutePath();
+            }
+        }
+
+        if (storageMethod.equals("mysql") || storageMethod.equals("mariadb") || storageMethod.equals("postgresql")) {
+            connection = DriverManager.getConnection(url, settingsConfig.getDatabaseUsername(), settingsConfig.getDatabasePassword());
+        } else {
+            connection = DriverManager.getConnection(url);
+        }
+
         try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE IF NOT EXISTS players (" +
                 "uuid TEXT PRIMARY KEY, " +
@@ -67,7 +100,7 @@ public class UserDatabase {
         }
     }
 
-    public void saveUserData(User user, UUID uuid) throws SQLException {
+    public void saveUserData(UUID uuid, User user) throws SQLException {
 
         //if the player doesn't exist, add them
         if (!userExists(uuid)) {

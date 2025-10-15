@@ -41,7 +41,7 @@ public class ChatSpyCommand implements SubCommand {
     @Override
     public void perform(Player player, String[] args) {
 
-        User user = UserManager.getUser(player.getUniqueId());
+        User user = UserManager.loadUser(player.getUniqueId());
         user.setChatSpy(!user.isChatSpy());
         for (String action : user.isChatSpy() ? settingsConfig.getChatspyEnableActions() : settingsConfig.getChatspyDisableActions()) {
             Utils.runActionDispatcher(action, player, player, null, null, null);
