@@ -132,46 +132,53 @@ public class ChatListener implements Listener {
         // -------------------------
         // Format message
         // -------------------------
-        Component formatedMessage = null;
+        Component formattedMessage = null;
         if (VaultHook.hasPermissions()) {
+            try {
+                List<String> playerGroups = List.of(VaultHook.getPerms().getPlayerGroups(player));
+                List<String> formattedGroups = new ArrayList<>(formatConfig.getFormatSection().getKeys(false));
+                Collections.reverse(formattedGroups);
 
-            List<String> playerGroups = List.of(VaultHook.getPerms().getPlayerGroups(player));
-            List<String> formattedGroups = new ArrayList<>(formatConfig.getFormatSection().getKeys(false));
-            Collections.reverse(formattedGroups);
+                for (String formattedGroup : formattedGroups) {
 
-            for (String formattedGroup : formattedGroups) {
+                    if (!playerGroups.contains(formattedGroup)) {
+                        continue;
+                    }
 
-                if (!playerGroups.contains(formattedGroup)) {
-                    continue;
+                    formattedMessage =
+                        buildFormattedComponent(
+                            formatConfig.getFormatSection().getString(formattedGroup), player, null, originalMessage, null
+                        );
+                    break;
                 }
+            } catch (UnsupportedOperationException ignored) {
 
-                formatedMessage =
-                    buildFormattedComponent(
-                        formatConfig.getFormatSection().getString(formattedGroup), player, null, originalMessage, null
-                    );
-                event.message(formatedMessage);
-                break;
             }
+        }
 
-        } else if (formatConfig.getFormatSection().getString("default") != null) {
+        if (formattedMessage == null && formatConfig.getFormatSection().getString("default") != null) {
 
-            formatedMessage =
+            formattedMessage =
                 buildFormattedComponent(
                     formatConfig.getFormatSection().getString("default"), player, null, originalMessage, null
                 );
-            event.message(formatedMessage);
+
+        }
+
+        if (formattedMessage != null) {
+            event.message(formattedMessage);
         }
 
         // -------------------------
         // Event Renderer
         // -------------------------
-        Component finalFormatedMessage = formatedMessage;
+        Component finalFormattedMessage = formattedMessage;
         String finalOriginalMessage = originalMessage;
         boolean finalIsMsgShout = isMsgShout;
         event.renderer((source, sourceDisplayName, message, viewer) -> {
 
             // If no formatted message, fallback to default
-            if (finalFormatedMessage == null) {
+            if (finalFormattedMessage == null) {
 
                 Component defaultRender = ChatRenderer.defaultRenderer().render(source, sourceDisplayName, message, viewer);
 
@@ -195,7 +202,7 @@ public class ChatListener implements Listener {
             }
 
             if (viewer instanceof ConsoleCommandSender) {
-                return Component.text("[" + source.getWorld().getName() + "] ").append(finalFormatedMessage);
+                return Component.text("[" + source.getWorld().getName() + "] ").append(finalFormattedMessage);
             }
 
             if (finalIsMsgShout) {
@@ -203,7 +210,7 @@ public class ChatListener implements Listener {
                     settingsConfig.getShoutFormat(), source,
                     viewer instanceof Player
                         ? (Player) viewer
-                        : null, finalOriginalMessage, finalFormatedMessage
+                        : null, finalOriginalMessage, finalFormattedMessage
                 );
             }
 
@@ -212,11 +219,11 @@ public class ChatListener implements Listener {
                     settingsConfig.getChatspyFormat(), source,
                     viewer instanceof Player
                         ? (Player) viewer
-                        : null, finalOriginalMessage, finalFormatedMessage
+                        : null, finalOriginalMessage, finalFormattedMessage
                 );
             }
 
-            return finalFormatedMessage;
+            return finalFormattedMessage;
         });
 
     }
