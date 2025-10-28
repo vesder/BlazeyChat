@@ -239,11 +239,12 @@ public class ChatListener implements Listener {
             }
         }
 
-        UUID senderUUID = event.getPlayer().getUniqueId();
+        Player sender = event.getPlayer();
+        UUID senderUUID = sender.getUniqueId();
 
         event.viewers().removeIf(audience -> {
 
-            if (audience instanceof Player viewerPlayer) {
+            if (audience instanceof Player viewerPlayer && viewerPlayer != sender) {
                 User viewerUser = UserManager.loadUser(viewerPlayer.getUniqueId());
                 Set<UUID> ignoredPlayers = viewerUser.getIgnoredPlayers();
                 return viewerUser.isIgnoreAll() || (ignoredPlayers != null && ignoredPlayers.contains(senderUUID));
@@ -253,4 +254,5 @@ public class ChatListener implements Listener {
         });
 
     }
+
 }
