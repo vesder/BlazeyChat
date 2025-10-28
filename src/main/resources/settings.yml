@@ -151,8 +151,8 @@ ignore:
 #     - postgresql
 #
 #   Local (no setup required):
-#     - h2        (default)
-#     - sqlite
+#     - h2
+#     - sqlite    (default)
 #
 # Example:
 #   storage-method: "sqlite"
