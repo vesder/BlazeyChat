@@ -4,7 +4,6 @@ import lombok.Getter;
 import me.vesder.blazeyChat.BlazeyChat;
 import me.vesder.blazeyChat.configs.ConfigManager;
 import me.vesder.blazeyChat.configs.customconfigs.SettingsConfig;
-import org.h2.Driver;
 
 import java.io.File;
 import java.sql.Connection;
@@ -48,7 +47,6 @@ public class UserDatabase {
             case "postgresql" ->
                 url = "jdbc:postgresql://" + settingsConfig.getDatabaseAddress() + "/" + settingsConfig.getDatabaseName();
             case "h2" -> {
-                new Driver();
                 File h2File = new File(BlazeyChat.getPlugin().getDataFolder(), settingsConfig.getDatabaseName());
                 url = "jdbc:h2:" + h2File.getAbsolutePath();
             }

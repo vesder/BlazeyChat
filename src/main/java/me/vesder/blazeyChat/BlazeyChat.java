@@ -14,6 +14,7 @@ import me.vesder.blazeyChat.hooks.UpdateChecker;
 import me.vesder.blazeyChat.listeners.ChatListener;
 import me.vesder.blazeyChat.listeners.JoinListener;
 import me.vesder.blazeyChat.listeners.QuitListener;
+import me.vesder.blazeyChat.utils.LibraryLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
@@ -42,6 +43,14 @@ public final class BlazeyChat extends JavaPlugin {
 
         // Register the plugin instance
         plugin = this;
+
+        // Download and load required SQL libraries from Maven Central at runtime
+        LibraryLoader.load(
+            "org.xerial:sqlite-jdbc:3.50.3.0",
+            "com.h2database:h2:2.4.240",
+            "com.mysql:mysql-connector-j:9.4.0",
+            "org.postgresql:postgresql:42.7.8"
+        );
 
         // Load configs
         ConfigManager.getConfigManager().load();
